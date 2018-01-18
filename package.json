@@ -1,5 +1,5 @@
 {
-  "name": "reader-server",
+  "name": "lite-reader-server",
   "version": "0.1.0",
   "private": true,
   "scripts": {
