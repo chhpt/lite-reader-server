@@ -1,7 +1,6 @@
 const Koa = require('koa');
 
 const app = new Koa();
-const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
@@ -20,9 +19,15 @@ app.use(json());
 app.use(logger());
 app.use(require('koa-static')(`${__dirname}/public`));
 
-app.use(views(`${__dirname}/views`, {
-  extension: 'pug'
-}));
+app.use(async (ctx, next) => {
+  await next();
+  // 允许跨域
+  ctx.set('Access-Control-Allow-Origin', ctx.headers.origin);
+  ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  ctx.set('Access-Control-Allow-Headers', 'Referer, Accept, Origin, User-Agent, X-Requested-With, Content-Type, withCredentials');
+  ctx.set('Access-Control-Allow-Methods', 'HEAD, OPTIONS, GET, POST, DELETE, PUT');
+  ctx.set('Access-Control-Allow-Credentials', true);
+});
 
 // logger
 app.use(async (ctx, next) => {
@@ -34,7 +39,6 @@ app.use(async (ctx, next) => {
 
 // routes
 app.use(index.routes(), index.allowedMethods());
-app.use(users.routes(), users.allowedMethods());
 
 // error-handling
 app.on('error', (err, ctx) => {

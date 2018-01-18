@@ -4,26 +4,23 @@
 
 const request = require('request-promise-native');
 const cheerio = require('cheerio');
-const fs = require('fs');
-const path = require('path');
-
 
 /**
  * 解析 HTML，获取文章信息
- * @param {!Object} $ 
- * @param {!Array} data 
- * @param {!Selector} articles 
- * @param {!Selector} imageClass 
- * @param {!Selector} titleClass 
- * @param {!Selector} urlClass 
+ * @param {!Object}
+ * @param {!Array} data
+ * @param {!Selector} articles
+ * @param {!Selector} imageClass
+ * @param {!Selector} titleClass
+ * @param {!Selector} urlClass
  */
 const parseArticle = ($, data, articles, imageClass, titleClass, urlClass) => {
-  articles.each((i, e, array) => {
+  articles.each((i, e) => {
     const article = {};
     const element = $(e);
     article.id = element.attr('data-post-id');
     // 获取文章图片链接
-    article.image = element.find(imageClass).attr('style').match(/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/)[0];
+    [article.image] = element.find(imageClass).attr('style').match(/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
     // 获取文章标题
     article.title = element.find(titleClass).text();
     // 获取文章发布时间
@@ -31,8 +28,8 @@ const parseArticle = ($, data, articles, imageClass, titleClass, urlClass) => {
     // 获取文章链接
     article.url = element.find(urlClass).attr('href');
     data.push(article);
-  })
-}
+  });
+};
 
 /**
  * 获取所有栏目
@@ -57,13 +54,13 @@ const getMenu = async () => {
     console.log(error);
     return error;
   }
-}
+};
 
 /**
  * 获取文章数据
- * @param {!String} url 
- * @param {!Number} page 
- * @param {!Number} postID 
+ * @param {!String} url
+ * @param {!Number} page
+ * @param {!Number} postID
  * @return {!Array<Object>}
  */
 const fetchArticles = async (url, page = 1, postID) => {
@@ -74,7 +71,7 @@ const fetchArticles = async (url, page = 1, postID) => {
   }
   try {
     // 判断是否为第一页，启用不同的链接
-    let responseHTML = page === 1 ? await request(url) : await request(`${url}?page=${page}&pajax=1&post_id__lt=${postID}`);
+    const responseHTML = page === 1 ? await request(url) : await request(`${url}?page=${page}&pajax=1&post_id__lt=${postID}`);
     const $ = cheerio.load(responseHTML);
     // 特殊文章
     const specialArticles = $('.o-matrix__row .o-matrix__row__unit .c-card-article');
@@ -86,23 +83,24 @@ const fetchArticles = async (url, page = 1, postID) => {
     console.log(error);
     return error;
   }
-}
+};
 
 /**
- * 
- * @param {*} page 
- * @param {*} column 
- * @param {*} url 
- * @param {*} id 
+ * 获取文章列表
+ * @param {!Number} page
+ * @param {!String} column
+ * @param {!String} url
+ * @param {!Number} id
+ * @return {!Array<Object>}
  */
-const getArticleList = async (page = 0, column, url, id) => {
+const getArticleList = async (page = 1, column, url, id) => {
   const articles = await fetchArticles(url, page, id);
   return articles;
-}
+};
 
 /**
  * 获取文章内容
- * @param {!String} url 
+ * @param {!String} url
  * @return {!Object}
  */
 const getArticle = async (url) => {
@@ -119,9 +117,10 @@ const getArticle = async (url) => {
   $(content).find('img').removeAttr('srcset');
   article.content = content;
   return article;
-}
+};
 
 module.exports = {
+  getMenu,
   getArticleList,
   getArticle
 };

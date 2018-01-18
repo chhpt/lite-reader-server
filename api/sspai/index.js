@@ -5,32 +5,29 @@ const request = require('request-promise-native');
 const cheerio = require('cheerio');
 const { baseURL, baseArticleURL, baseImageURL } = require('./config');
 
-const path = require('path');
-const fs = require('fs');
-
 /**
  * 解析时间
  * @param {!Number} time 秒
- * @return {!String} 
+ * @return {!String}
  */
 const parseTime = (time) => {
   const now = Date.now();
-  const past = parseInt(now / 1000) - time;
+  const past = parseInt(now / 1000, 10) - time;
   switch (true) {
     case past < 3600: {
-      const t = parseInt(past / 60);
-      return `${t ? t : t + 1} 分钟前`;
+      const t = parseInt(past / 60, 10);
+      return `${t !== 0 ? t : t + 1} 分钟前`;
     }
     case past < 86400: {
-      const t = parseInt(past / 3600);
-      return `${t ? t : t + 1} 小时前`;
+      const t = parseInt(past / 3600, 10);
+      return `${t !== 0 ? t : t + 1} 小时前`;
     }
     default: {
-      const t = parseInt(past / 86400);
-      return `${t ? t : t + 1} 天前`;
+      const t = parseInt(past / 86400, 10);
+      return `${t !== 0 ? t : t + 1} 天前`;
     }
   }
-}
+};
 
 /**
  * 获取栏目
@@ -65,14 +62,14 @@ const getMenu = async () => {
     }
   ];
   return menu;
-}
+};
 
 /**
- * 
- * @param {!Number} page 
- * @param {!Number} limit 
- * @param {!Boolean} isMatrix 
- * @param {!String} tag 
+ * 获取文章列表
+ * @param {!Number} page
+ * @param {!Number} limit
+ * @param {!Boolean} isMatrix
+ * @param {!String} tag
  * @param {!Boolean} includeTotal
  * @return {!JSON}
  */
@@ -81,22 +78,14 @@ const fetchArticles = async (page = 0, limit = 20, isMatrix = true, tag, include
     ? `${baseURL} /articles?offset=${page}&limit=${limit}&is_matrix=1&sort=matrix_at&include_total=${includeTotal}`
     : `${baseURL}/articles?offset=${page}&limit=${limit}&has_tag=1&tag=${encodeURI(tag)}&include_total=${includeTotal}&type=recommend_to_home`;
   const responseJSON = await request(url);
-  fs.writeFile(`${__dirname}/res.json`, responseJSON, (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('success');
-    }
-  })
   return responseJSON;
-}
-
+};
 
 /**
  * 获取文章列表
- * @param {!Number} page 
+ * @param {!Number} page
  * @param {!String} column 栏目
- * @param {!Number} limit 
+ * @param {!Number} limit
  * @return {!Array<Object>}
  */
 const getArticleList = async (page = 0, column, limit = 20) => {
@@ -109,12 +98,12 @@ const getArticleList = async (page = 0, column, limit = 20) => {
   const articleList = [];
   const data = JSON.parse(responseJSON);
   if (data.list) {
-    data.list.forEach(e => {
+    data.list.forEach((e) => {
       const article = {};
       article.title = e.title;
       article.intro = e.summary;
       article.url = `${baseArticleURL}/${e.id}`;
-      article.image = `${baseImageURL}/${e.banner}`
+      article.image = `${baseImageURL}/${e.banner}`;
       article.id = e.id;
       article.time = parseTime(e.released_at);
       articleList.push(article);
@@ -123,11 +112,11 @@ const getArticleList = async (page = 0, column, limit = 20) => {
     return new Error('解析错误');
   }
   return articleList;
-}
+};
 
 /**
  * 获取文章内容
- * @param {!String} url 
+ * @param {!String} url
  * @return {!Object}
  */
 const getArticle = async (url) => {
@@ -144,6 +133,7 @@ const getArticle = async (url) => {
 };
 
 module.exports = {
+  getMenu,
   getArticleList,
   getArticle
 };
