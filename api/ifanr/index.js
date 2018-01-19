@@ -21,6 +21,9 @@ const parseArticle = ($, data, articles, imageClass, titleClass, urlClass) => {
     article.id = element.attr('data-post-id');
     // 获取文章图片链接
     [article.image] = element.find(imageClass).attr('style').match(/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
+    if (article.image.indexOf('http') === -1) {
+      article.image = `http://${article.image}`;
+    }
     // 获取文章标题
     article.title = element.find(titleClass).text();
     // 获取文章发布时间
@@ -112,7 +115,7 @@ const getArticle = async (url) => {
   // 文章发布时间
   article.time = $('.c-article-header-meta__time').text();
   // 文章内容（HTML）
-  const content = $('article.o-single-content__body__content').contents();
+  const content = $('article.o-single-content__body__content').html();
   // 去除图片的 srcset 属性
   $(content).find('img').removeAttr('srcset');
   article.content = content;
