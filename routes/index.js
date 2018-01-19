@@ -16,25 +16,21 @@ router.get('/get_menu', async (ctx, next) => {
   await next();
 });
 
-router.get('/articles', async (ctx, next) => {
+router.get('/get_article_list', async (ctx, next) => {
   const {
     app, page, column, url, id
   } = ctx.query;
   const data = await apps[app].getArticleList(Number(page), column, url, id);
-  console.log(data);
   ctx.body = JSON.stringify(data);
   await next();
 });
 
-router.get('/string', async (ctx, next) => {
-  ctx.body = 'koa2 string';
-  await next();
-});
-
-router.get('/json', async (ctx, next) => {
-  ctx.body = {
-    title: 'koa2 json'
-  };
+router.get('/get_article', async (ctx, next) => {
+  const {
+    app, url
+  } = ctx.query;
+  const data = await apps[app].getArticle(url);
+  ctx.body = JSON.stringify(data);
   await next();
 });
 

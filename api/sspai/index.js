@@ -3,6 +3,8 @@
  */
 const request = require('request-promise-native');
 const cheerio = require('cheerio');
+
+// const { writeFile } = require('../../utils');
 const { baseURL, baseArticleURL, baseImageURL } = require('./config');
 
 /**
@@ -74,10 +76,17 @@ const getMenu = async () => {
  * @return {!JSON}
  */
 const fetchArticles = async (page = 0, limit = 20, isMatrix = true, tag, includeTotal = false) => {
+  console.log(page, limit, isMatrix, tag);
   const url = isMatrix
-    ? `${baseURL} /articles?offset=${page}&limit=${limit}&is_matrix=1&sort=matrix_at&include_total=${includeTotal}`
-    : `${baseURL}/articles?offset=${page}&limit=${limit}&has_tag=1&tag=${encodeURI(tag)}&include_total=${includeTotal}&type=recommend_to_home`;
-  const responseJSON = await request(url);
+    ? `${baseURL}/articles?offset=${page * limit}&limit=${limit}&is_matrix=1&sort=matrix_at&include_total=${includeTotal}`
+    : `${baseURL}/articles?offset=${page * limit}&limit=${limit}&has_tag=1&tag=${encodeURI(tag)}&include_total=${includeTotal}&type=recommend_to_home`;
+  let responseJSON;
+  console.log(url);
+  try {
+    responseJSON = await request(url);
+  } catch (error) {
+    return new Error('网络错误');
+  }
   return responseJSON;
 };
 
@@ -88,12 +97,12 @@ const fetchArticles = async (page = 0, limit = 20, isMatrix = true, tag, include
  * @param {!Number} limit
  * @return {!Array<Object>}
  */
-const getArticleList = async (page = 0, column, limit = 20) => {
+const getArticleList = async (page = 0, column) => {
   let responseJSON = '';
   if (column === 'Matrix') {
-    responseJSON = await fetchArticles(page, limit, true);
+    responseJSON = await fetchArticles(page, 20, true);
   } else {
-    responseJSON = await fetchArticles(page, limit, false, column);
+    responseJSON = await fetchArticles(page, 20, false, column);
   }
   const articleList = [];
   const data = JSON.parse(responseJSON);
@@ -103,7 +112,7 @@ const getArticleList = async (page = 0, column, limit = 20) => {
       article.title = e.title;
       article.intro = e.summary;
       article.url = `${baseArticleURL}/${e.id}`;
-      article.image = `${baseImageURL}/${e.banner}`;
+      article.image = e.banner !== '' ? `${baseImageURL}/${e.banner}` : '';
       article.id = e.id;
       article.time = parseTime(e.released_at);
       articleList.push(article);
@@ -128,7 +137,7 @@ const getArticle = async (url) => {
   // 文章发布时间
   article.time = $('.main article .meta').find('time').text();
   // 文章内容（HTML）
-  article.content = $('.main article .article-content .content').contents();
+  article.content = $('.main article .article-content .content').html();
   return article;
 };
 
