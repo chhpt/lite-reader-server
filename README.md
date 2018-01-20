@@ -17,8 +17,8 @@ Response
 ```JSON
 [
   {
-    title: '爱范儿',
-    id: 'ifanr'
+    "title": "爱范儿",
+    "id": "ifanr"
   }
 ]
 ```
@@ -38,8 +38,8 @@ Response:
 ```JSON
 [
   {
-    title: '游戏',
-    url: 'https://sspai.com/tag/%E6%B8%B8%E6%88%8F#home'
+    "title": "游戏",
+    "url": "https://sspai.com/tag/%E6%B8%B8%E6%88%8F#home"
   }
 ]
 ```
@@ -63,12 +63,12 @@ Response:
 ```JSON
 [
   {
-    title: '文章标题',
-    intro: '这是一篇文章',
-    time: '一天前',
-    url: 'http:article.com/post/9658304',
-    image: 'http://cdn.ifanr.com',
-    id: 9658304
+    "title": "文章标题",
+    "intro": "这是一篇文章",
+    "time": "一天前",
+    "url": "http:article.com/post/9658304",
+    "image": "http://cdn.ifanr.com",
+    "id": 9658304
   }
 ]
 ```
@@ -89,9 +89,9 @@ Response:
 ```JSON
 [
   {
-    title: '文章标题',
-    time: '一天前',
-    content: '内容 HTML'
+    "title": "文章标题",
+    "time": "一天前",
+    "content": "内容 HTML"
   }
 ]
 ```
