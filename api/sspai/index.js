@@ -75,11 +75,11 @@ const getMenu = async () => {
  * @param {!Boolean} includeTotal
  * @return {!JSON}
  */
-const fetchArticles = async (page = 0, limit = 20, isMatrix = true, tag, includeTotal = false) => {
+const fetchArticles = async (page = 1, limit = 20, isMatrix = true, tag, includeTotal = false) => {
   console.log(page, limit, isMatrix, tag);
   const url = isMatrix
-    ? `${baseURL}/articles?offset=${page * limit}&limit=${limit}&is_matrix=1&sort=matrix_at&include_total=${includeTotal}`
-    : `${baseURL}/articles?offset=${page * limit}&limit=${limit}&has_tag=1&tag=${encodeURI(tag)}&include_total=${includeTotal}&type=recommend_to_home`;
+    ? `${baseURL}/articles?offset=${(page - 1) * limit}&limit=${limit}&is_matrix=1&sort=matrix_at&include_total=${includeTotal}`
+    : `${baseURL}/articles?offset=${(page - 1) * limit}&limit=${limit}&has_tag=1&tag=${encodeURI(tag)}&include_total=${includeTotal}&type=recommend_to_home`;
   let responseJSON;
   console.log(url);
   try {
@@ -97,7 +97,7 @@ const fetchArticles = async (page = 0, limit = 20, isMatrix = true, tag, include
  * @param {!Number} limit
  * @return {!Array<Object>}
  */
-const getArticleList = async (page = 0, column) => {
+const getArticleList = async (page = 1, column) => {
   let responseJSON = '';
   if (column === 'Matrix') {
     responseJSON = await fetchArticles(page, 20, true);
@@ -110,7 +110,7 @@ const getArticleList = async (page = 0, column) => {
     data.list.forEach((e) => {
       const article = {};
       article.title = e.title;
-      article.intro = e.summary;
+      article.summary = e.summary;
       article.url = `${baseArticleURL}/${e.id}`;
       article.image = e.banner !== '' ? `${baseImageURL}/${e.banner}` : '';
       article.id = e.id;

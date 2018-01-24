@@ -1,7 +1,7 @@
 const request = require('request-promise-native');
 const cheerio = require('cheerio');
 
-const { writeFile } = require('../../utils');
+// const { writeFile } = require('../../utils');
 
 const search = async (app) => {
   const url = `http://weixin.sogou.com/weixin?type=1&query=${encodeURI(app)}&ie=utf8&_sug_=y&_sug_type_=1`;

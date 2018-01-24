@@ -53,7 +53,7 @@ URL：`/get_article_list`
 参数：
 
 - app： 应用 id
-- page： 页数
+- page： 页数（从 1 开始）
 - column：栏目名
 - url：栏目 url
 - id：最后一个文章的 id

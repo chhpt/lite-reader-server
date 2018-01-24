@@ -66,12 +66,13 @@ const getMenu = async () => {
  * @param {!Number} postID
  * @return {!Array<Object>}
  */
-const fetchArticles = async (url, page = 1, postID) => {
+const fetchArticles = async (url, page = 1, postID = 0) => {
   const articles = [];
   // 非第一页需要 postID
   if (page !== 1 && !postID) {
     return new Error('id 缺失');
   }
+  console.log(url, page, postID);
   try {
     // 判断是否为第一页，启用不同的链接
     const responseHTML = page === 1 ? await request(url) : await request(`${url}?page=${page}&pajax=1&post_id__lt=${postID}`);
