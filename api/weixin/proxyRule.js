@@ -22,7 +22,7 @@ let count = 0;
 const log = (lists) => {
   lists.forEach((item) => {
     const { title } = item.app_msg_ext_info;
-    console.log(`${++count}.${title}`);
+    console.warn(`${++count}.${title}`);
   });
 };
 
