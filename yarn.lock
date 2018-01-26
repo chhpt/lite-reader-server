@@ -87,13 +87,13 @@ ansi-escapes@^3.0.0:
   version "3.0.0"
   resolved "http://registry.npm.taobao.org/ansi-escapes/download/ansi-escapes-3.0.0.tgz#ec3e8b4e9f8064fc02c3ac9b65f1c275bda8ef92"
 
-ansi-regex@*, ansi-regex@^3.0.0:
-  version "3.0.0"
-  resolved "http://registry.npm.taobao.org/ansi-regex/download/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
-
 ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "http://registry.npm.taobao.org/ansi-regex/download/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
+
+ansi-regex@^3.0.0:
+  version "3.0.0"
+  resolved "http://registry.npm.taobao.org/ansi-regex/download/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
 
 ansi-styles@^2.2.1:
   version "2.2.1"
@@ -670,6 +670,10 @@ colorful@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/colorful/download/colorful-2.1.0.tgz#6a8bdcbc2da42a50db3b4882fa25263aaa1f2d8e"
 
+colors@^1.1.2:
+  version "1.1.2"
+  resolved "http://registry.npm.taobao.org/colors/download/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
+
 columnify@~1.5.4:
   version "1.5.4"
   resolved "http://registry.npm.taobao.org/columnify/download/columnify-1.5.4.tgz#4737ddf1c7b69a8a7c340570782e947eec8e78bb"
@@ -974,6 +978,10 @@ dom-serializer@0, dom-serializer@~0.1.0:
   dependencies:
     domelementtype "~1.1.1"
     entities "~1.1.1"
+
+dom-walk@^0.1.0:
+  version "0.1.1"
+  resolved "http://registry.npm.taobao.org/dom-walk/download/dom-walk-0.1.1.tgz#672226dc74c8f799ad35307df936aba11acd6018"
 
 domelementtype@1, domelementtype@^1.3.0:
   version "1.3.0"
@@ -1588,6 +1596,13 @@ global-dirs@^0.1.0:
   dependencies:
     ini "^1.3.4"
 
+global@^4.3.2:
+  version "4.3.2"
+  resolved "http://registry.npm.taobao.org/global/download/global-4.3.2.tgz#e76989268a6c74c38908b1305b10fc0e394e9d0f"
+  dependencies:
+    min-document "^2.19.0"
+    process "~0.5.1"
+
 globals@^11.0.1:
   version "11.1.0"
   resolved "http://registry.npm.taobao.org/globals/download/globals-11.1.0.tgz#632644457f5f0e3ae711807183700ebf2e4633e4"
@@ -1826,7 +1841,7 @@ import-lazy@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/import-lazy/download/import-lazy-2.1.0.tgz#05698e3d45c88e8d7e9d92cb0584e77f096f3e43"
 
-imurmurhash@*, imurmurhash@^0.1.4:
+imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "http://registry.npm.taobao.org/imurmurhash/download/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
 
@@ -2519,6 +2534,12 @@ mimic-fn@^1.0.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/mimic-fn/download/mimic-fn-1.1.0.tgz#e667783d92e89dbd342818b5230b9d62a672ad18"
 
+min-document@^2.19.0:
+  version "2.19.0"
+  resolved "http://registry.npm.taobao.org/min-document/download/min-document-2.19.0.tgz#7bd282e3f5842ed295bb748cdd9f1ffa2c824685"
+  dependencies:
+    dom-walk "^0.1.0"
+
 minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4, minimatch@~3.0.3:
   version "3.0.4"
   resolved "http://registry.npm.taobao.org/minimatch/download/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
@@ -3143,6 +3164,10 @@ prepend-http@^1.0.1:
 process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "http://registry.npm.taobao.org/process-nextick-args/download/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
+
+process@~0.5.1:
+  version "0.5.2"
+  resolved "http://registry.npm.taobao.org/process/download/process-0.5.2.tgz#1638d8a8e34c2f440a91db95ab9aeb677fc185cf"
 
 progress@^2.0.0:
   version "2.0.0"
