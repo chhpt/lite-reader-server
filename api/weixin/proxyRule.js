@@ -1,5 +1,23 @@
 // 控制终端打印颜色
 const colors = require('colors');
+const Async = require('async');
+
+const Collection = require('../../models/db');
+
+const weixin = new Collection('alitech', {
+  id: { type: 'string', required: false },
+  title: { type: 'string', required: true },
+  url: { type: 'string', required: true },
+  image: { type: 'string', required: true },
+  time: { type: 'string', required: true },
+  summary: { type: 'string', required: false, default: '' },
+  author: { type: 'string', required: false, default: '' },
+  content: { type: 'string', required: false, default: '' }
+});
+
+weixin.init().then(async () => {
+  console.log('初始化成功');
+});
 
 // 插入自动翻页代码
 const insertToNext = (content) => {
@@ -24,20 +42,31 @@ let count = 0;
 const logger = colors.green;
 const errorLogger = colors.red;
 
-const log = (lists) => {
-  lists.forEach((item) => {
+const log = async (list) => {
+  Async.each(list, async (item) => {
     try {
       const { title } = item.app_msg_ext_info;
-      logger(`${++count}.${title}`.green);
+      const url = decodeURI(item.app_msg_ext_info.content_url);
+      const image = decodeURI(item.app_msg_ext_info.cover);
+      const time = item.comm_msg_info.datetime.toString();
+      console.log(logger(`${++count}.${title}`));
+      // 存储数据
+      await weixin.insert({
+        url,
+        image,
+        time,
+        title
+      });
+      console.log(`${title}存储成功`.yellow);
+      return 1;
     } catch (e) {
-      errorLogger(lists);
-      errorLogger(item);
-      errorLogger(`${e}`.red);
+      console.log(errorLogger(item[0]), errorLogger(item[1]));
+      console.log(errorLogger(`${e}`.red));
     }
   });
 };
 
-module.exports = {
+const rule = {
   // 响应被接受之前
   async beforeSendResponse(requestDetail, responseDetail) {
     // 响应
@@ -45,7 +74,9 @@ module.exports = {
     // 请求 url
     const { url } = requestDetail;
 
-    // 当链接地址为公众号历史消息页面时(第一种页面形式)
+    /**
+     * 当链接地址为公众号历史消息页面时(第一种页面形式)
+     */
     if (/mp\/getmasssendmsg/i.test(url)) {
       const data = response.body.toString();
       if (data === '') return responseDetail;
@@ -61,7 +92,7 @@ module.exports = {
         const ret = reg.exec(data); // 转换变量为string
         const list = ret[1].replace(/&quot;/g, '"');
         const articles = JSON.parse(list).list;
-        log(articles);
+        await log(articles);
       } catch (e) {
         /**
          * 如果上面的正则没有匹配到，那么这个页面内容可能是公众号历史消息页面向下翻动的第二页，
@@ -71,17 +102,18 @@ module.exports = {
           const json = JSON.parse(data);
           if (json.general_msg_list !== []) {
             const articles = JSON.parse(json.general_msg_list).list;
-            log(articles);
+            await log(articles);
           }
         } catch (e) {
           // 错误捕捉
-          errorLogger(e);
+          console.log(e);
         }
       }
-      return responseDetail;
     }
 
-    // 当链接地址为公众号历史消息页面时(第二种页面形式)
+    /**
+     * 当链接地址为公众号历史消息页面时(第二种页面形式)
+     */
     if (/mp\/profile_ext\?action=home/i.test(url)) {
       const data = response.body.toString();
       if (data === '') return responseDetail;
@@ -99,14 +131,15 @@ module.exports = {
         // 将 &quot 转化成 "
         const list = ret[1].replace(/&quot;/g, '"');
         const articles = JSON.parse(list).list;
-        log(articles);
+        await log(articles);
       } catch (e) {
-        errorLogger(e);
+        console.log(e);
       }
-      return responseDetail;
     }
 
-    // 第二种页面表现形式的向下翻页后的json
+    /**
+     * 第二种页面表现形式的向下翻页后的json
+     */
     if (/mp\/profile_ext\?action=getmsg/i.test(url)) {
       const data = response.body.toString();
       try {
@@ -114,16 +147,16 @@ module.exports = {
         if (json.general_msg_list !== []) {
           const list = json.general_msg_list;
           const articles = JSON.parse(list).list;
-          log(articles);
+          await log(articles);
         }
       } catch (e) {
-        errorLogger(e);
+        console.log(e);
       }
     }
-
-    // 返回响应
-    return new Promise((resolve) => {
-      resolve(responseDetail);
-    });
+    return responseDetail;
   }
+};
+
+module.exports = {
+  rule
 };

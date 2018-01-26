@@ -1,6 +1,6 @@
 const AnyProxy = require('anyproxy');
 
-const rule = require('./proxyRule');
+const { rule } = require('./proxyRule');
 
 const options = {
   rule,
@@ -19,6 +19,3 @@ const proxyServer = new AnyProxy.ProxyServer(options);
 proxyServer.on('ready', () => { /* */ });
 proxyServer.on('error', () => { /* */ });
 proxyServer.start();
-
-// when finished
-proxyServer.close();
