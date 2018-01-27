@@ -29,6 +29,7 @@ router.get('/get_article', async (ctx, next) => {
   const {
     app, url
   } = ctx.query;
+
   const data = await apps[app].getArticle(url);
   ctx.body = JSON.stringify(data);
   await next();

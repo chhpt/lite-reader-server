@@ -3,24 +3,33 @@ const Mongolass = require('mongolass');
 const { Schema } = Mongolass;
 
 // 创建并连接数据库
-const AppDB = new Mongolass();
-const connection = AppDB.connect('mongodb://admin:password@localhost:27017/apps');
+const mongolass = new Mongolass();
+// 连接成功，返回 db 实例
+const db = mongolass.connect('mongodb://admin:password@localhost:27017/apps');
 
-class Collection {
-  constructor(schemaName, schemaObjct) {
-    this.connection = connection;
-    this.schema = new Schema(`${schemaName}Schema`, schemaObjct);
-    this.model = AppDB.model(schemaName, this.schema);
+class Mongo {
+  constructor() {
+    this.db = null;
+    this.schema = null;
+    this.model = null;
   }
 
-  async init() {
+  async connect() {
     try {
-      this.connection = this.connection ? this.connection : await AppDB.connect('mongodb://admin:password@localhost:27017/apps');
+      // 连接成功，返回 db 实例
+      this.db = await db;
       console.log('连接成功');
       return this;
     } catch (e) {
       throw new Error(e);
     }
+  }
+
+  initSchema(schemaName, schemaObjct) {
+    this.schema = new Schema(`${schemaName}Schema`, schemaObjct);
+    this.model = mongolass.model(schemaName, this.schema, {
+      collName: schemaName
+    });
   }
 
   async insert(data) {
@@ -34,7 +43,7 @@ class Collection {
 
   async find(data) {
     try {
-      const result = this.model.find(data);
+      const result = await this.model.find(data);
       return result;
     } catch (e) {
       throw new Error(e);
@@ -58,4 +67,4 @@ class Collection {
 //   test.insert({})
 // });
 
-module.exports = Collection;
+module.exports = Mongo;

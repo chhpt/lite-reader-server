@@ -1,22 +1,15 @@
 // 控制终端打印颜色
 const colors = require('colors');
 const Async = require('async');
+const Mongo = require('../../models/db');
+// 表的结构
+const { schemaStructure } = require('./config');
 
-const Collection = require('../../models/db');
+const weixin = new Mongo();
 
-const weixin = new Collection('alitech', {
-  id: { type: 'string', required: false },
-  title: { type: 'string', required: true },
-  url: { type: 'string', required: true },
-  image: { type: 'string', required: true },
-  time: { type: 'string', required: true },
-  summary: { type: 'string', required: false, default: '' },
-  author: { type: 'string', required: false, default: '' },
-  content: { type: 'string', required: false, default: '' }
-});
-
-weixin.init().then(async () => {
-  console.log('初始化成功');
+weixin.connect().then((m) => {
+  m.initSchema('alitech', schemaStructure);
+  console.log('初始化表成功');
 });
 
 // 插入自动翻页代码
@@ -46,8 +39,8 @@ const log = async (list) => {
   Async.each(list, async (item) => {
     try {
       const { title } = item.app_msg_ext_info;
-      const url = decodeURI(item.app_msg_ext_info.content_url);
-      const image = decodeURI(item.app_msg_ext_info.cover);
+      const url = decodeURI(item.app_msg_ext_info.content_url).replace(/\\/g, '');
+      const image = decodeURI(item.app_msg_ext_info.cover).replace(/\\/g, '');
       const time = item.comm_msg_info.datetime.toString();
       console.log(logger(`${++count}.${title}`));
       // 存储数据

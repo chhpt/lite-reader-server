@@ -1,20 +1,93 @@
+/**
+ * 微信公众号
+ */
+
 const request = require('request-promise-native');
 const cheerio = require('cheerio');
 
-// const { writeFile } = require('../../utils');
+const Mongo = require('../../models/db');
+const { accounts } = require('./config');
 
-const search = async (app) => {
-  const url = `http://weixin.sogou.com/weixin?type=1&query=${encodeURI(app)}&ie=utf8&_sug_=y&_sug_type_=1`;
-  const responseHTML = await request(url);
-  const $ = cheerio.load(responseHTML);
-  $('.news-box .news-list2 li').each((i, e) => {
-    const element = $(e);
-    const target = element.find('.txt-box .tit a');
-    const url = target.attr('href');
-    const appName = target.text();
-    console.log(appName, url);
+// 公众号列表
+const accountsList = Object.keys(accounts);
+const weixin = new Mongo();
+
+/**
+ * 获取所有公众号
+ * @return {!Array<Object>}
+ */
+const getAccounts = () => {
+  const allAccounts = [];
+  accountsList.forEach((item) => {
+    const account = {
+      name: accounts[item].name,
+      id: item,
+      icon: accounts[item].icon,
+      type: 'weixin'
+    };
+    allAccounts.push(account);
   });
-  // console.log(responseHTML);
+  return allAccounts;
 };
 
-search('阿里技术');
+/**
+ * 获取文章列表
+ * @param {!Number} page
+ * @param {!String} account
+ * @param {!Number} limit
+ * @return {!Array<Object>}
+ */
+const getArticleList = async (page = 1, account, limit = 20) => {
+  if (!account) {
+    throw new TypeError('确实公众号名');
+  }
+  if (!accountsList.includes(account)) {
+    throw new Error('公众号不存在');
+  }
+  // 检查数据库中是否存在对应的表
+  const { db } = await weixin.connect();
+  return new Promise((resolve, reject) => {
+    // 回调函数需要借用异步返回结果
+    db.collection(account, { strict: true }, async (result, collection) => {
+      if (result) {
+        reject(new Error('数据异常'));
+      } else {
+        // 需要跳过的数据
+        const skip = (page - 1) * limit;
+        const result = await collection.find({}, { limit, skip }).toArray();
+        result.forEach((item) => {
+          item.image = item.image.replace(/\\/g, '');
+          item.url = item.url.replace(/\\/g, '');
+        });
+        resolve(result);
+      }
+    });
+  });
+};
+
+/**
+ * 获取文章内容
+ * @param {!String} url
+ * @return {!Object}
+ */
+const getArticle = async (url) => {
+  // 对 url 进行处理
+  const decodeURL = url.replace(/\\/g, '');
+  const responseHTML = await request(decodeURL);
+  const $ = cheerio.load(responseHTML);
+  const article = {};
+  // 文章标题
+  article.title = $('#img-content .rich_media_title').text();
+  // 文章发布时间
+  article.time = $('#img-content #post-date').text();
+  // 文章内容（HTML）
+  article.content = $('#img-content .rich_media_content ').html();
+  return article;
+};
+
+module.exports = {
+  getAccounts,
+  getArticleList,
+  getArticle
+};
+

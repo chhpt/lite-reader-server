@@ -54,7 +54,6 @@ const getMenu = async () => {
     });
     return menu;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -72,7 +71,6 @@ const fetchArticles = async (url, page = 1, postID = 0) => {
   if (page !== 1 && !postID) {
     return new Error('id 缺失');
   }
-  console.log(url, page, postID);
   try {
     // 判断是否为第一页，启用不同的链接
     const responseHTML = page === 1 ? await request(url) : await request(`${url}?page=${page}&pajax=1&post_id__lt=${postID}`);
@@ -84,7 +82,6 @@ const fetchArticles = async (url, page = 1, postID = 0) => {
     parseArticle($, articles, normalArticles, '.article-image', 'h3', '.article-link');
     return articles;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
