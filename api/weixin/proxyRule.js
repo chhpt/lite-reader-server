@@ -38,7 +38,7 @@ const errorLogger = colors.red;
 const log = async (list) => {
   Async.each(list, async (item) => {
     try {
-      const { title } = item.app_msg_ext_info;
+      const title = item.app_msg_ext_info.title.replace(/&nbsp;/, ' ');
       const url = decodeURI(item.app_msg_ext_info.content_url).replace(/\\/g, '');
       const image = decodeURI(item.app_msg_ext_info.cover).replace(/\\/g, '');
       const time = item.comm_msg_info.datetime.toString();

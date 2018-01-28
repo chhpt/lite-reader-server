@@ -56,6 +56,7 @@ const getArticleList = async (page = 1, account, limit = 20) => {
         const skip = (page - 1) * limit;
         const result = await collection.find({}, { limit, skip }).toArray();
         result.forEach((item) => {
+          item.title = item.title.replace(/&nbsp;/g, ' ');
           item.image = item.image.replace(/\\/g, '');
           item.url = item.url.replace(/\\/g, '');
         });

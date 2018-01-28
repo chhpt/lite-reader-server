@@ -112,7 +112,7 @@ const getArticleList = async (page = 1, column) => {
       article.title = e.title;
       article.summary = e.summary;
       article.url = `${baseArticleURL}/${e.id}`;
-      article.image = e.banner !== '' ? `${baseImageURL}/${e.banner}` : '';
+      article.image = e.banner !== '' ? `${baseImageURL}/${e.banner}?imageMogr2/quality/95/thumbnail/!360x220r/gravity/Center/crop/360x220` : '';
       article.id = e.id;
       article.time = parseTime(e.released_at);
       articleList.push(article);
