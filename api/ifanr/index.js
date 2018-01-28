@@ -113,10 +113,7 @@ const getArticle = async (url) => {
   // 文章发布时间
   article.time = $('.c-article-header-meta__time').text();
   // 文章内容（HTML）
-  const content = $('article.o-single-content__body__content').html();
-  // 去除图片的 srcset 属性
-  $(content).find('img').removeAttr('srcset');
-  article.content = content;
+  article.content = $('article.o-single-content__body__content').html();
   return article;
 };
 

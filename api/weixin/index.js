@@ -81,7 +81,8 @@ const getArticle = async (url) => {
   // 文章发布时间
   article.time = $('#img-content #post-date').text();
   // 文章内容（HTML）
-  article.content = $('#img-content .rich_media_content ').html();
+  const content = $('#img-content .rich_media_content ').html().replace(/data-src/g, 'src');
+  article.content = content;
   return article;
 };
 

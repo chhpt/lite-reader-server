@@ -2,10 +2,10 @@
 
 这是 LiteReader 的服务器，主要提供数据抓取服务。
 
-## 抓取公众号文章的方法
+## 抓取公众号文章
 
-[微信公众号内容的批量采集与应用](https://zhuanlan.zhihu.com/c_65943221)
-[自动抓取微信数据程序实现详细步骤 - 包括阅读数和点赞数](https://www.jianshu.com/p/13d70a5a244d)
+- [微信公众号内容的批量采集与应用](https://zhuanlan.zhihu.com/c_65943221)
+- [自动抓取微信数据程序实现详细步骤 - 包括阅读数和点赞数](https://www.jianshu.com/p/13d70a5a244d)
 
 ## API
 
