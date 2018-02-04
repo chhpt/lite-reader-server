@@ -11,6 +11,8 @@ module.exports = {
     'no-param-reassign': 'off',
     'no-plusplus': 'off',
     'no-useless-escape': 'off',
+    "prefer-destructuring": 'off',
+    'quote-props': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

@@ -69,7 +69,7 @@ Response:
 [
   {
     "title": "文章标题",
-    "intro": "这是一篇文章",
+    "summary": "这是一篇文章",
     "time": "一天前",
     "url": "http:article.com/post/9658304",
     "image": "http://cdn.ifanr.com",
@@ -88,6 +88,7 @@ URL：`/get_article`
 
 - app： 应用 id
 - url：文章 url
+- payload: 其他可能需要的信息
 
 Response:
 

@@ -10,14 +10,21 @@ let appList = [
     name: '少数派',
     id: 'sspai',
     icon: 'http://blog-1252710547.cossh.myqcloud.com/sspai.png'
+  },
+  {
+    name: '一个',
+    id: 'one',
+    icon: 'http://image.wufazhuce.com/apple-touch-icon.png'
   }
 ];
 
 // 微信公众号列表
 const accountsList = getAccounts();
 
-appList = appList.concat(accountsList);
+// 按照字母顺序排序
+appList = appList.concat(accountsList).sort((prev, next) => (prev.name < next.name ? 1 : -1));
 
+console.log(appList);
 module.exports = {
   appList
 };
