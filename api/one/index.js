@@ -3,6 +3,8 @@
  */
 
 const request = require('request-promise-native');
+const cheerio = require('cheerio');
+
 const { articleDetailURL } = require('./config');
 
 /**
@@ -54,13 +56,13 @@ const getArticleList = async (page = 1, column, url) => {
   const articleList = [];
   let data = null;
   if (column === '首页') {
-    const current = page > 1 ? new Date() + ((page - 1) * 86400000) : new Date();
+    const current = page > 1 ? new Date(Date.now() - ((page - 1) * 86400000)) : new Date();
     const year = current.getFullYear();
     const month = current.getMonth() + 1;
     const day = current.getDate();
     const date = `${year}-${month}-${day}`;
-    const idnexURL = url.replace(/date/, date);
-    const responseJSON = await request(idnexURL);
+    const reqURL = url.replace(/date/, date);
+    const responseJSON = await request(reqURL);
     data = JSON.parse(responseJSON).data.content_list;
   } else {
     // 获取列表
@@ -82,7 +84,8 @@ const getArticleList = async (page = 1, column, url) => {
     article.summary = item.forward;
     article.time = item.post_date ? item.post_date : item.d;
     // 内容类型
-    article.category = item.category;
+    article.category = item.category ? item.category : url[url.length - 1];
+    articleList.push(article);
   });
   return articleList;
 };
@@ -103,13 +106,13 @@ const getArticle = async (url, payload) => {
     const article = {};
     article.title = data.title;
     article.url = data.web_url;
-    article.content = data.html_content;
+    const $ = cheerio.load(data.html_content);
+    article.content = $('.one-content-box').html();
     return article;
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 };
-
 module.exports = {
   getMenu,
   getArticleList,

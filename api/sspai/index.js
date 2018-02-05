@@ -76,12 +76,10 @@ const getMenu = async () => {
  * @return {!JSON}
  */
 const fetchArticles = async (page = 1, limit = 20, isMatrix = true, tag, includeTotal = false) => {
-  console.log(page, limit, isMatrix, tag);
   const url = isMatrix
     ? `${baseURL}/articles?offset=${(page - 1) * limit}&limit=${limit}&is_matrix=1&sort=matrix_at&include_total=${includeTotal}`
     : `${baseURL}/articles?offset=${(page - 1) * limit}&limit=${limit}&has_tag=1&tag=${encodeURI(tag)}&include_total=${includeTotal}&type=recommend_to_home`;
   let responseJSON;
-  console.log(url);
   try {
     responseJSON = await request(url);
   } catch (error) {

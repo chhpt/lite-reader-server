@@ -27,10 +27,9 @@ router.get('/get_article_list', async (ctx, next) => {
 
 router.get('/get_article', async (ctx, next) => {
   const {
-    app, url
+    app, url, payload
   } = ctx.query;
-
-  const data = await apps[app].getArticle(url);
+  const data = await apps[app].getArticle(url, JSON.parse(payload));
   ctx.body = JSON.stringify(data);
   await next();
 });

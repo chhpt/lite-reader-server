@@ -21,6 +21,7 @@ class Mongo {
       console.log('连接成功');
       return this;
     } catch (e) {
+      console.log('数据库连接失败');
       throw new Error(e);
     }
   }

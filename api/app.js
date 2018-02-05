@@ -24,7 +24,6 @@ const accountsList = getAccounts();
 // 按照字母顺序排序
 appList = appList.concat(accountsList).sort((prev, next) => (prev.name < next.name ? 1 : -1));
 
-console.log(appList);
 module.exports = {
   appList
 };
