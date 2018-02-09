@@ -1,5 +1,5 @@
 const { getAccounts } = require('./weixin');
-const { getCategories, getAppArticleList } = require('./flipboard');
+const { getCategories, getAppArticleList } = require('./category');
 
 let appList = [
   {
