@@ -1,4 +1,5 @@
 const { getAccounts } = require('./weixin');
+const { getCategories, getAppArticleList } = require('./flipboard');
 
 let appList = [
   {
@@ -21,10 +22,13 @@ let appList = [
 // 微信公众号列表
 const accountsList = getAccounts();
 
+
 // 按照字母顺序排序
 appList = appList.concat(accountsList).sort((prev, next) => (prev.name < next.name ? 1 : -1));
 
 module.exports = {
-  appList
+  appList,
+  getCategories,
+  getAppArticleList
 };
 
