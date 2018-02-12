@@ -1,5 +1,5 @@
 const { getAccounts } = require('./weixin');
-const { getCategories, getAppArticleList } = require('./category');
+const { getCategories, getAppArticleList, getAppArticle } = require('./category');
 
 let appList = [
   {
@@ -29,6 +29,7 @@ appList = appList.concat(accountsList).sort((prev, next) => (prev.name < next.na
 module.exports = {
   appList,
   getCategories,
-  getAppArticleList
+  getAppArticleList,
+  getAppArticle
 };
 

@@ -3,14 +3,16 @@ module.exports = {
     udid: '0', // 随机生成
     tuuid: '0', //
     userid: '0',
-    ver: '3.2.24',
+    ver: '4.1.5.400105',
     device: 'ipad-11.2.1',
     variant: 'china',
     limit: 20,
     // sections: '', // 当获取数据时需要提供 sections，从导航获取 sections
     // pageKey: '' // 最后一篇文章的 id
   },
-  categoryURL: 'https://fbchina.flipboard.com/v1/static/contentGuide.json',
-  contentListURL: 'https://fbchina.flipboard.com/v1/users/updateFeed/0',
-  articleURL: 'https://www.flipboard.cn/hybrid/articles/http%3A%2F%2F36kr%2Ecom%2Fp%2F5117711%2Ehtml%3Fktm%5Fsource%3Dfeed'
+  categoryURL: 'http://flipboard-cn-static.oss-cn-hangzhou.aliyuncs.com/api/content-guide/v4cg.json',
+  contentListURL: 'https://fbchina.flipboard.cn/v1/users/updateFeed/0',
+  articleURL: 'https://www.flipboard.cn/hybrid/articles',
+  rssURL: 'https://flipboard-web-service.flipchina.cn/api/flipmag-china/articles',
+  topicURL: 'https://fbchina.flipchina.cn/v2/cg/changeitsudoku/0'
 };

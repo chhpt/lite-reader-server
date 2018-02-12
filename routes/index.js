@@ -1,6 +1,8 @@
 const Router = require('koa-router');
 const apps = require('../api');
-const { appList, getCategories, getAppArticleList } = require('../api/app');
+const {
+  appList, getCategories, getAppArticleList, getAppArticle
+} = require('../api/app');
 
 const router = new Router();
 
@@ -42,8 +44,14 @@ router.get('/get_categories', async (ctx, next) => {
 
 router.get('/get_app_article_list', async (ctx, next) => {
   const { id, section } = ctx.query;
-  console.log(id, section);
   const data = await getAppArticleList(section, id);
+  ctx.body = JSON.stringify(data);
+  await next();
+});
+
+router.get('/get_app_article', async (ctx, next) => {
+  const { url, section, hasRss } = ctx.query;
+  const data = await getAppArticle(url, section, hasRss);
   ctx.body = JSON.stringify(data);
   await next();
 });
