@@ -75,6 +75,9 @@ const getAppArticleList = async (section, id) => {
 };
 
 const getAppArticle = async (url, section, hasRss) => {
+  if (typeof hasRss === 'string') {
+    hasRss = hasRss === 'true';
+  }
   // 微信公众号文章
   if (url.indexOf('weixin') > -1) {
     const responseHTML = await request(url);
@@ -107,8 +110,14 @@ const getAppArticle = async (url, section, hasRss) => {
     return article;
   }
   // 通过其他合作接口获取
-  const res = await request(url);
-  return res;
+  const responseHTML = await request(url);
+  const $ = cheerio.load(responseHTML);
+  const article = {};
+  $('article header').remove();
+  article.title = $('title').text();
+  article.time = $('time').text();
+  article.content = $('article').html();
+  return article;
 };
 
 module.exports = {
