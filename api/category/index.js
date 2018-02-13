@@ -1,5 +1,5 @@
 /**
- * Flipboard
+ * 应用分类
  * 通过 Flipboard 的接口批量获取应用
  */
 
@@ -18,7 +18,7 @@ const getCategories = async () => {
   return categories;
 };
 
-const getAppArticleList = async (section, id) => {
+const getAPPArticleList = async (section, id) => {
   const { contentListURL, params } = config;
   params.sections = section;
   params.pageKey = id;
@@ -26,7 +26,7 @@ const getAppArticleList = async (section, id) => {
     url: contentListURL,
     qs: params,
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) APPleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'
     }
   });
   // 将非 JSON 格式的数据转换成 JSON 格式的
@@ -58,7 +58,7 @@ const getAppArticleList = async (section, id) => {
     article.time = item.dateCreated;
     article.image = item.inlineImage ? item.inlineImage.mediumURL : '';
     article.url = item.sourceURL;
-    article.rssText = item.rssText;
+    article.hasRSs = Boolean(item.rssText);
     return article;
   }).filter(e => e.title);
   // 删除重复文章
@@ -74,7 +74,7 @@ const getAppArticleList = async (section, id) => {
   return data;
 };
 
-const getAppArticle = async (url, section, hasRss) => {
+const getAPPArticle = async (url, section, hasRss) => {
   if (typeof hasRss === 'string') {
     hasRss = hasRss === 'true';
   }
@@ -122,7 +122,7 @@ const getAppArticle = async (url, section, hasRss) => {
 
 module.exports = {
   getCategories,
-  getAppArticleList,
-  getAppArticle
+  getAPPArticleList,
+  getAPPArticle
 };
 

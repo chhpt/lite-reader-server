@@ -13,6 +13,8 @@ module.exports = {
     'no-useless-escape': 'off',
     "prefer-destructuring": 'off',
     'quote-props': 'off',
+    'object-curly-newline': 'off',
+    'no-bitwise': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
