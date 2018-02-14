@@ -26,9 +26,11 @@ class User {
     return 0;
   }
 
-  async getUser(email) {
+  async getUser({ email, id } = {}) {
+    console.log(email, id);
     try {
-      const user = await this.db.findOne({ email });
+      const user = email ? await this.db.findOne({ email }) : await this.db.findById(id);
+      console.log(user);
       return user;
     } catch (error) {
       throw new Error(error);
@@ -45,10 +47,18 @@ class User {
     }
   }
 
-  async updateUser(email, user) {
+  async updateUserByEmail(email, user) {
     try {
       const result = await this.db.findOneAndUpdate({ email }, user);
-      // 根据 result 是否为空判断是否更新成功
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async updateUserById(id, user) {
+    try {
+      const result = await this.db.findByIdAndUpdate(id, user);
       return result;
     } catch (error) {
       throw new Error(error);
@@ -64,7 +74,7 @@ class User {
 //   ips: ['fsad']
 // }
 
-// new User().updateUser('faf', { email: 'test' });
+// new User().updateUserById('5a841bfcfb11161626aa05b5', { followAPPs: [{ app: 'fsfsdf' }] });
 
 module.exports = new User();
 

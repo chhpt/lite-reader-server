@@ -6,11 +6,13 @@ const Router = require('koa-router');
 const User = require('../models/user');
 const { getFormatTime } = require('../utils');
 
-const router = new Router();
+const router = new Router({
+  prefix: '/user'
+});
 
 
 // 注册新用户
-router.post('/user_register', async (ctx, next) => {
+router.post('/register', async (ctx, next) => {
   const { username, password, email } = ctx.request.body;
   const exit = await User.checkUser(email);
   // 邮箱已经存在
@@ -37,9 +39,9 @@ router.post('/user_register', async (ctx, next) => {
 });
 
 // 通过 email 登录
-router.post('/user_login', async (ctx, next) => {
+router.post('/login', async (ctx, next) => {
   const { email, password } = ctx.request.body;
-  const user = await User.getUser(email);
+  const user = await User.getUser({ email });
   // 用户不存在
   if (!user) {
     ctx.body = {
@@ -55,22 +57,22 @@ router.post('/user_login', async (ctx, next) => {
     ctx.body.status = 1;
     // 写入 session 信息，标志登录成功
     ctx.session.signed = 1;
-    ctx.session.user_id = user._id;
+    ctx.session.userId = user._id;
   }
   await next();
 });
 
 router.post('/logout', async (ctx, next) => {
-  const { email } = ctx.request.body;
-  const user = User.getUser(email);
   const signed = ctx.session.signed;
+  const id = ctx.session.userId;
+  const user = User.getUser({ id });
   if (user && signed) {
     ctx.session = null;
     ctx.body.status = 1;
   } else {
     ctx.body = {
       status: 0,
-      error: '注销失败'
+      error: '注销失败，身份信息有误'
     };
   }
   await next();
