@@ -15,6 +15,7 @@ module.exports = {
     'quote-props': 'off',
     'object-curly-newline': 'off',
     'no-bitwise': 'off',
+    'no-underscore-dangle': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

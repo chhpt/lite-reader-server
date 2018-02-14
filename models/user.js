@@ -1,26 +1,21 @@
 const MongoDB = require('./db');
 
 const UserSchema = {
-  id: { type: 'string', required: true },
-  username: { type: 'string', required: true },
-  password: { type: 'string', required: true },
-  email: { type: 'string', require: true },
-  registerTime: { type: 'string', require: true },
-  ips: { type: Array, require: false },
-  readHistory: { type: Array, require: false },
-  followAPPs: { type: Array, require: false }
+  username: String,
+  password: String,
+  email: String, // 邮箱，唯一
+  registerTime: Date, // 注册时间
+  ips: Array, // 访问 ip
+  readHistory: Array, // 阅读的历史文章
+  followAPPs: Array, // 关注的应用
+  setting: Object // 个人设置信息
 };
 
-const db = new MongoDB('user', UserSchema).init();
+const { model } = new MongoDB('user', UserSchema);
 
 class User {
   constructor() {
-    this.db = null;
-  }
-
-  async init() {
-    this.db = await db;
-    return this;
+    this.db = model;
   }
 
   async checkUser(email) {
@@ -33,8 +28,8 @@ class User {
 
   async getUser(email) {
     try {
-      const users = await this.db.find({ email });
-      return users;
+      const user = await this.db.findOne({ email });
+      return user;
     } catch (error) {
       throw new Error(error);
     }
@@ -42,37 +37,34 @@ class User {
 
   async insertUser(user) {
     try {
-      await this.db.insertOne(user);
-      return 1;
+      // 返回插入的数据
+      const result = await this.db.insertMany(user);
+      return result.length;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async updateUser(id, user) {
+  async updateUser(email, user) {
     try {
-      const result = await this.db.findOneAndUpdate({ id }, { $set: user });
-      // 根据是否有 value  判断是否更新成功
-      return result.value ? 1 : 0;
+      const result = await this.db.findOneAndUpdate({ email }, user);
+      // 根据 result 是否为空判断是否更新成功
+      return result;
     } catch (error) {
       throw new Error(error);
     }
   }
 }
 
-new User().init().then(async (e) => {
-  await e.db.insertOne({
-    id: 'fa',
-    username: 'fs',
-    password: 'asdfsd',
-    email: 'fadsf',
-    ips: ['fsad']
-  });
-  const res = await e.db.findOneAndUpdate({ username: 'ffsd' }, { $set: { ips: ['ffsd'] } });
-  console.log(res);
-}).catch((err) => {
-  console.log(err);
-});
+// {
+//   id: 'fa',
+//   username: 'fs',
+//   password: 'asdfsd',
+//   email: 'fadsf',
+//   ips: ['fsad']
+// }
+
+// new User().updateUser('faf', { email: 'test' });
 
 module.exports = new User();
 

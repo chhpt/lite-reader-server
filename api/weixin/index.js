@@ -10,7 +10,7 @@ const { accounts } = require('./config');
 
 // 公众号列表
 const accountsList = Object.keys(accounts);
-const weixin = new Mongo();
+const weixin = new Mongo('weixin', {});
 
 /**
  * 获取所有公众号

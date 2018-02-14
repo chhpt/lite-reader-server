@@ -5,9 +5,12 @@ const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
 const logger = require('koa-logger');
+const session = require('koa-session');
 
-const Index = require('./routes/index');
-const User = require('./routes/user');
+const config = require('./config');
+const SessionStore = require('./models/session.js');
+
+const Router = require('./routes/index');
 
 // error handler
 onerror(app);
@@ -19,6 +22,12 @@ app.use(bodyparser({
 
 app.use(json());
 app.use(logger());
+
+// session
+// session 加密
+app.keys = ['session key', 'key'];
+app.use(session({ ...config.session, store: SessionStore }, app));
+
 app.use(require('koa-static')(`${__dirname}/public`));
 
 app.use(async (ctx, next) => {
@@ -40,8 +49,7 @@ app.use(async (ctx, next) => {
 });
 
 // routes
-app.use(Index.routes(), Index.allowedMethods());
-app.use(User.routes(), User.allowedMethods());
+Router(app);
 
 // error-handling
 app.on('error', (err, ctx) => {

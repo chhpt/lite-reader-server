@@ -1,13 +1,27 @@
-const Mongolass = require('mongolass');
+const mongoose = require('mongoose');
 const config = require('../config');
 
-const { Schema } = Mongolass;
+const { dbname, username, password, port } = config.db;
 
 // 创建并连接数据库
-const mongolass = new Mongolass();
+mongoose.connect(`mongodb://${username}:${password}@localhost:${port}/${dbname}`);
+mongoose.Promise = global.Promise;
 
-const { dbname, username, password, port } = config.db;
-const db = mongolass.connect(`mongodb://${username}:${password}@localhost:${port}/${dbname}`);
+const db = mongoose.connection;
+
+
+db.once('open', () => {
+  console.log('连接数据成功');
+});
+
+db.on('error', (error) => {
+  console.error(`Error in MongoDb connection: ${error}`);
+  mongoose.disconnect();
+});
+
+db.on('close', () => {
+  console.log('数据库断开，重新连接数据库');
+});
 
 class MongoDB {
   /**
@@ -15,30 +29,12 @@ class MongoDB {
    * @param {*} collecion 集合名称
    * @param {*} schemaObjct 集合的表结构
    */
-  constructor(collecion, schemaObjct) {
-    this.schemaName = collecion;
-    this.schemaObjct = schemaObjct;
-    this.db = null;
-    this.schema = null;
-    this.model = null;
-  }
-
-  async init() {
-    try {
-      // 连接成功，返回 db 实例
-      this.db = await db;
-      // 连接成功，返回 db 实例
-      console.log('连接成功');
-      // 创建表
-      this.schema = new Schema(`${this.schemaName}Schema`, this.schemaObjct);
-      this.model = mongolass.model(this.schemaName, this.schema, {
-        collName: this.schemaName
-      });
-      return this.model;
-    } catch (e) {
-      console.log('数据库连接失败');
-      throw new Error(e);
-    }
+  constructor(collectionName, schemaObjct) {
+    const { Schema } = mongoose;
+    const schema = new Schema(schemaObjct);
+    this.connection = mongoose.connection;
+    // model
+    this.model = mongoose.model(collectionName, schema);
   }
 }
 
