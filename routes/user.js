@@ -10,7 +10,6 @@ const router = new Router({
   prefix: '/user'
 });
 
-
 // 注册新用户
 router.post('/register', async (ctx, next) => {
   const { username, password, email } = ctx.request.body;
@@ -32,8 +31,13 @@ router.post('/register', async (ctx, next) => {
       ips: [ip]
     };
     // 注册成功
-    const isSuccess = await User.insertUser(user);
-    ctx.body.status = isSuccess ? 1 : 0;
+    const users = await User.insertUser(user);
+    const status = users.length ? 1 : 0;
+    ctx.body = {
+      status,
+      id: users[0]._id,
+      email: users[0].email
+    };
   }
   await next();
 });
@@ -54,7 +58,12 @@ router.post('/login', async (ctx, next) => {
       error: '密码错误'
     };
   } else {
-    ctx.body.status = 1;
+    ctx.body = {
+      status: 1,
+      username: user.username,
+      email: user.email,
+      id: user._id
+    };
     // 写入 session 信息，标志登录成功
     ctx.session.signed = 1;
     ctx.session.userId = user._id;

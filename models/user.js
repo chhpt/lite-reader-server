@@ -27,10 +27,8 @@ class User {
   }
 
   async getUser({ email, id } = {}) {
-    console.log(email, id);
     try {
       const user = email ? await this.db.findOne({ email }) : await this.db.findById(id);
-      console.log(user);
       return user;
     } catch (error) {
       throw new Error(error);
@@ -41,24 +39,53 @@ class User {
     try {
       // 返回插入的数据
       const result = await this.db.insertMany(user);
-      return result.length;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  async updateUserByEmail(email, user) {
-    try {
-      const result = await this.db.findOneAndUpdate({ email }, user);
       return result;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async updateUserById(id, user) {
+  async updateUserByEmail(email, data) {
     try {
-      const result = await this.db.findByIdAndUpdate(id, user);
+      const result = await this.db.findOneAndUpdate({ email }, data);
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async updateUserById(id, data) {
+    try {
+      const result = await this.db.findByIdAndUpdate(id, data);
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+
+  async addUserFollow(id, app) {
+    try {
+      const result = await this.db.findByIdAndUpdate(id, { $push: { followAPPs: app } });
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async cancelUserFollow(id, app) {
+    try {
+      const result = await this.db.update(
+        {
+          _id: id,
+          'followAPPs.title': app.title
+        },
+        {
+          $set: {
+            'followAPPs.$.delete': 1
+          }
+        }
+      );
       return result;
     } catch (error) {
       throw new Error(error);
@@ -74,7 +101,7 @@ class User {
 //   ips: ['fsad']
 // }
 
-// new User().updateUserById('5a841bfcfb11161626aa05b5', { followAPPs: [{ app: 'fsfsdf' }] });
+new User().cancelUserFollow('5a858d11501f6b4ce7338f04', { title: '36氪' });
 
 module.exports = new User();
 

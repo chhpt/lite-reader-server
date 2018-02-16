@@ -18,7 +18,7 @@ router.use('/', async (ctx, next) => {
   if (!user) {
     ctx.body = {
       status: 0,
-      error: '你的身份信息有误'
+      error: '你的身份信息有误，请重新登录'
     };
   }
   // 身份信息验证成功
@@ -31,6 +31,7 @@ router.get('/get_follow_apps', async (ctx, next) => {
   const id = ctx.session.userId;
   const { followAPPs } = await User.getUser({ id });
   ctx.body = {
+    status: 1,
     apps: followAPPs
   };
   await next();
@@ -40,9 +41,35 @@ router.post('/follow_app', async (ctx, next) => {
   const id = ctx.session.userId;
   const { app } = ctx.request.body;
   // 获取原关注的应用
-  const { followAPPs } = await User.getUser({ id });
-  followAPPs.push(app);
-  User.updateUserById(id, { followAPPs });
+  const res = await User.addUserFollow(id, app);
+  if (res) {
+    ctx.body = {
+      status: 1
+    };
+  } else {
+    ctx.body = {
+      status: 0,
+      error: '更新失败'
+    };
+  }
+  await next();
+});
+
+router.post('/cancel_follow_app', async (ctx, next) => {
+  const id = ctx.session.userId;
+  const { app } = ctx.request.body;
+  const res = await User.cancelUserFollow(id, app);
+  console.log(res);
+  if (res) {
+    ctx.body = {
+      status: 1
+    };
+  } else {
+    ctx.body = {
+      status: 0,
+      error: '取消关注失败'
+    };
+  }
   await next();
 });
 
