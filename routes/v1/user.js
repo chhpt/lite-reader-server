@@ -30,9 +30,11 @@ router.use('/', async (ctx, next) => {
 router.get('/get_follow_apps', async (ctx, next) => {
   const id = ctx.session.userId;
   const { followAPPs } = await User.getUser({ id });
+  // 过滤掉标志为不关注的应用
+  const apps = followAPPs.filter(v => !v.delete);
   ctx.body = {
-    status: 1,
-    apps: followAPPs
+    apps,
+    status: 1
   };
   await next();
 });

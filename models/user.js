@@ -66,7 +66,25 @@ class User {
 
   async addUserFollow(id, app) {
     try {
-      const result = await this.db.findByIdAndUpdate(id, { $push: { followAPPs: app } });
+      // 关注的应用是否已经存在
+      const exit = await this.db.find({ _id: id, 'followAPPs.title': app.title });
+      let result;
+      // 存在，则更新 delete 标志为 0，否则插入新数据
+      if (exit) {
+        result = await this.db.update(
+          {
+            _id: id,
+            'followAPPs.title': app.title
+          },
+          {
+            $set: {
+              'followAPPs.$.delete': 0
+            }
+          }
+        );
+      } else {
+        result = await this.db.findByIdAndUpdate(id, { $push: { followAPPs: app } });
+      }
       return result;
     } catch (error) {
       throw new Error(error);
@@ -101,7 +119,7 @@ class User {
 //   ips: ['fsad']
 // }
 
-new User().cancelUserFollow('5a858d11501f6b4ce7338f04', { title: '36氪' });
+// new User().addUserFollow('5a858d11501f6b4ce7338f04', { title: '21CTO' });
 
 module.exports = new User();
 

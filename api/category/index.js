@@ -58,19 +58,20 @@ const getAPPArticleList = async (section, id) => {
     article.time = item.dateCreated;
     article.image = item.inlineImage ? item.inlineImage.mediumURL : '';
     article.url = item.sourceURL;
-    article.hasRSs = Boolean(item.rssText);
+    article.hasRss = Boolean(item.rssText);
     return article;
   }).filter(e => e.title);
   // 删除重复文章
   let flag;
-  data.forEach((e) => {
-    if (e.title === data[0].title) {
+  data.forEach((e, i) => {
+    if (e.title === data[0].title && i) {
       flag = true;
     }
   });
   if (flag) {
     data.shift();
   }
+  console.log(data[0]);
   return data;
 };
 
@@ -78,6 +79,7 @@ const getAPPArticle = async (url, section, hasRss) => {
   if (typeof hasRss === 'string') {
     hasRss = hasRss === 'true';
   }
+  console.log(url, hasRss);
   // 微信公众号文章
   if (url.indexOf('weixin') > -1) {
     const responseHTML = await request(url);
@@ -112,6 +114,7 @@ const getAPPArticle = async (url, section, hasRss) => {
   // 通过其他合作接口获取
   const responseHTML = await request(url);
   const $ = cheerio.load(responseHTML);
+  console.log(responseHTML);
   const article = {};
   $('article header').remove();
   article.title = $('title').text();
