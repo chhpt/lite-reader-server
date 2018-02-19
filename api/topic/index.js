@@ -1,6 +1,6 @@
 const request = require('request-promise-native');
 
-const category = 'https://app.jike.ruguoapp.com/1.0/topics/recommendation/categories';
+// const category = 'https://app.jike.ruguoapp.com/1.0/topics/recommendation/categories';
 
 const getTopics = async () => {
   const option = {

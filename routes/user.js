@@ -74,16 +74,13 @@ router.post('/login', async (ctx, next) => {
 router.post('/logout', async (ctx, next) => {
   const signed = ctx.session.signed;
   const id = ctx.session.userId;
-  const user = User.getUser({ id });
+  const user = await User.getUser({ id });
   if (user && signed) {
     ctx.session = null;
-    ctx.body.status = 1;
-  } else {
-    ctx.body = {
-      status: 0,
-      error: '注销失败，身份信息有误'
-    };
   }
+  ctx.body = {
+    status: 1
+  };
   await next();
 });
 

@@ -45,18 +45,20 @@ class User {
     }
   }
 
-  async updateUserByEmail(email, data) {
+  async updateUserName(id, username) {
     try {
-      const result = await this.db.findOneAndUpdate({ email }, data);
+      await this.db.findByIdAndUpdate(id, { username });
+      const result = await this.db.findById(id);
       return result;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async updateUserById(id, data) {
+  async updateEmail(id, email) {
     try {
-      const result = await this.db.findByIdAndUpdate(id, data);
+      await this.db.findByIdAndUpdate(id, { email });
+      const result = this.db.findById(id);
       return result;
     } catch (error) {
       throw new Error(error);
@@ -67,11 +69,11 @@ class User {
   async addUserFollow(id, app) {
     try {
       // 关注的应用是否已经存在
-      const exit = await this.db.find({ _id: id, 'followAPPs.title': app.title });
-      let result;
+      const exit = await this.db.findOne({ _id: id, 'followAPPs.title': app.title });
       // 存在，则更新 delete 标志为 0，否则插入新数据
+
       if (exit) {
-        result = await this.db.update(
+        await this.db.update(
           {
             _id: id,
             'followAPPs.title': app.title
@@ -83,9 +85,11 @@ class User {
           }
         );
       } else {
-        result = await this.db.findByIdAndUpdate(id, { $push: { followAPPs: app } });
+        await this.db.findByIdAndUpdate(id, { $push: { followAPPs: app } });
       }
-      return result;
+      const result = await this.db.findById(id);
+      const apps = result.followAPPs.filter(v => !v.delete);
+      return apps;
     } catch (error) {
       throw new Error(error);
     }
@@ -93,7 +97,7 @@ class User {
 
   async cancelUserFollow(id, app) {
     try {
-      const result = await this.db.update(
+      await this.db.update(
         {
           _id: id,
           'followAPPs.title': app.title
@@ -104,20 +108,14 @@ class User {
           }
         }
       );
-      return result;
+      const result = await this.db.findById(id);
+      const apps = result.followAPPs.filter(v => !v.delete);
+      return apps;
     } catch (error) {
       throw new Error(error);
     }
   }
 }
-
-// {
-//   id: 'fa',
-//   username: 'fs',
-//   password: 'asdfsd',
-//   email: 'fadsf',
-//   ips: ['fsad']
-// }
 
 // new User().addUserFollow('5a858d11501f6b4ce7338f04', { title: '21CTO' });
 
