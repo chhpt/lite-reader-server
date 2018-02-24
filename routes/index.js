@@ -1,6 +1,6 @@
 const APP = require('./app');
 const User = require('./user');
-const Auth = require('./v1/user');
+const Auth = require('./v1/auth_user');
 
 module.exports = (app) => {
   // 处理 OPTIONS 请求

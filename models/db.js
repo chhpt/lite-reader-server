@@ -5,6 +5,7 @@ const { dbname, username, password, port } = config.db;
 
 // 创建并连接数据库
 mongoose.connect(`mongodb://${username}:${password}@localhost:${port}/${dbname}`);
+
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;

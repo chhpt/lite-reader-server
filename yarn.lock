@@ -2774,6 +2774,10 @@ node-uuid@~1.4.7:
   version "1.4.8"
   resolved "http://registry.npm.taobao.org/node-uuid/download/node-uuid-1.4.8.tgz#b040eb0923968afabf8d32fb1f17f1167fdab907"
 
+nodemailer@^4.6.0:
+  version "4.6.0"
+  resolved "http://registry.npm.taobao.org/nodemailer/download/nodemailer-4.6.0.tgz#b99391435aabbd34b74a1283112fbdfd34f7eb8f"
+
 nodemon@^1.8.1:
   version "1.14.11"
   resolved "http://registry.npm.taobao.org/nodemon/download/nodemon-1.14.11.tgz#cc0009dd8d82f126f3aba50ace7e753827a8cebc"
@@ -3390,7 +3394,7 @@ pug-walk@^1.1.5:
   version "1.1.5"
   resolved "http://registry.npm.taobao.org/pug-walk/download/pug-walk-1.1.5.tgz#90e943acbcf7021e6454cf1b32245891cba6f851"
 
-pug@^2.0.0-beta6, pug@^2.0.0-rc.1:
+pug@^2.0.0-beta6, pug@^2.0.0-rc.4:
   version "2.0.0-rc.4"
   resolved "http://registry.npm.taobao.org/pug/download/pug-2.0.0-rc.4.tgz#b7b08f6599bd5302568042b7436984fb28c80a13"
   dependencies:

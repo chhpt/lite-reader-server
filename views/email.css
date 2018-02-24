@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+div,
+h2 {
+  margin: 20px 0;
+  text-align: center;
+}
+
+div span {
+  color: #3A6676;
+  font-size: 18px;
+  text-decoration: underline;
+}
