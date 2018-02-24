@@ -1,0 +1,22 @@
+module.exports = {
+  params: {
+    udid: '0', // 随机生成
+    tuuid: '0', //
+    userid: '0',
+    ver: '4.1.5.400105',
+    device: 'ipad-11.2.1',
+    variant: 'china',
+    limit: 20,
+    // sections: '', // 当获取数据时需要提供 sections，从导航获取 sections
+    // pageKey: '' // 最后一篇文章的 id
+  },
+  categoryURL: 'http://flipboard-cn-static.oss-cn-hangzhou.aliyuncs.com/api/content-guide/v4cg.json',
+  contentListURL: 'https://fbchina.flipboard.cn/v1/users/updateFeed/0',
+  articleURL: 'https://www.flipboard.cn/hybrid/articles',
+  rssURL: 'https://flipboard-web-service.flipchina.cn/api/flipmag-china/articles',
+  topicURL: 'https://fbchina.flipchina.cn/v2/cg/changeitsudoku/0',
+  category: {
+    'tech': '科技与科学',
+    'art': '艺术与文化'
+  }
+};

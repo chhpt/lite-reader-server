@@ -17,5 +17,9 @@ module.exports = {
     httpOnly: true,
     signed: true,
     renew: true
+  },
+  email: {
+    user: '',
+    password: ''
   }
 };

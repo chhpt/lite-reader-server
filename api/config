@@ -14,5 +14,9 @@ module.exports = {
   contentListURL: 'https://fbchina.flipboard.cn/v1/users/updateFeed/0',
   articleURL: 'https://www.flipboard.cn/hybrid/articles',
   rssURL: 'https://flipboard-web-service.flipchina.cn/api/flipmag-china/articles',
-  topicURL: 'https://fbchina.flipchina.cn/v2/cg/changeitsudoku/0'
+  topicURL: 'https://fbchina.flipchina.cn/v2/cg/changeitsudoku/0',
+  category: {
+    'tech': '科技与科学',
+    'art': '艺术与文化'
+  }
 };

@@ -8,16 +8,6 @@ const cheerio = require('cheerio');
 const config = require('./config');
 const { writeFile } = require('../../utils');
 
-const getCategories = async () => {
-  const { categoryURL, params } = config;
-  const responseJSON = await request({
-    url: categoryURL,
-    qs: params
-  });
-  const categories = JSON.parse(responseJSON).categories;
-  return categories;
-};
-
 const getAPPArticleList = async (section, id) => {
   const { contentListURL, params } = config;
   params.sections = section;
@@ -124,7 +114,6 @@ const getAPPArticle = async (url, section, hasRss) => {
 };
 
 module.exports = {
-  getCategories,
   getAPPArticleList,
   getAPPArticle
 };
