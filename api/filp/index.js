@@ -6,12 +6,30 @@
 const request = require('request-promise-native');
 const cheerio = require('cheerio');
 const config = require('./config');
-const { writeFile } = require('../../utils');
+// const { writeFile } = require('../../utils');
 
-const getAPPArticleList = async (section, id) => {
+/**
+ * 获取应用栏目
+ */
+const getMenu = async () => {
+  const menus = [
+    {
+      title: '首页',
+      id: 0
+    }
+  ];
+  return menus;
+};
+
+/**
+ * 获取应用的文章列表
+ * @param {*} section 文章所属栏目的 id
+ * @param {*} id 最后一篇文章的 id
+ */
+const getArticleList = async (section, id) => {
   const { contentListURL, params } = config;
   params.sections = section;
-  params.pageKey = id;
+  params.pageKey = Number(id) === 0 ? undefined : id; // id 不能为 0
   const res = await request({
     url: contentListURL,
     qs: params,
@@ -29,8 +47,8 @@ const getAPPArticleList = async (section, id) => {
     }
   });
   // 提取文章信息，删除没有标题的文章
-  const data = jsonData.map((e, i, array) => {
-    writeFile('test.json', array);
+  const data = jsonData.map((e) => {
+    // writeFile('test.json', array);
     const parseData = JSON.parse(e);
     // 根据原数据 type 提取主要数据
     let item;
@@ -61,15 +79,10 @@ const getAPPArticleList = async (section, id) => {
   if (flag) {
     data.shift();
   }
-  console.log(data[0]);
   return data;
 };
 
-const getAPPArticle = async (url, section, hasRss) => {
-  if (typeof hasRss === 'string') {
-    hasRss = hasRss === 'true';
-  }
-  console.log(url, hasRss);
+const getArticle = async ({ url, section, hasRss }) => {
   // 微信公众号文章
   if (url.indexOf('weixin') > -1) {
     const responseHTML = await request(url);
@@ -87,7 +100,6 @@ const getAPPArticle = async (url, section, hasRss) => {
   // 可以直接通过 rssText 获取内容的文章
   if (hasRss) {
     const rssURL = `${config.rssURL}/${encodeURIComponent(url)}`;
-    console.log(rssURL);
     const responseJSON = await request({
       url: rssURL,
       qs: {
@@ -114,7 +126,8 @@ const getAPPArticle = async (url, section, hasRss) => {
 };
 
 module.exports = {
-  getAPPArticleList,
-  getAPPArticle
+  getMenu,
+  getArticleList,
+  getArticle
 };
 

@@ -5,43 +5,20 @@
 const request = require('request-promise-native');
 const cheerio = require('cheerio');
 
-const { articleDetailURL } = require('./config');
-
+const config = require('./config');
+const { writeFile } = require('../../../../utils');
 /**
  * 获取栏目
  * @return {!Array<Object>}
  */
 const getMenu = () => {
-  const menu = [
-    {
-      title: '首页',
-      url: 'http://v3.wufazhuce.com:8000/api/channel/one/date/0'
-    },
-    {
-      title: '图文',
-      url: 'http://v3.wufazhuce.com:8000/api/all/list/0'
-    },
-    {
-      title: '阅读',
-      url: 'http://v3.wufazhuce.com:8000/api/all/list/1'
-    },
-    {
-      title: '连载',
-      url: 'http://v3.wufazhuce.com:8000/api/all/list/2'
-    },
-    {
-      title: '问答',
-      url: 'http://v3.wufazhuce.com:8000/api/all/list/3'
-    },
-    {
-      title: '音乐',
-      url: 'http://v3.wufazhuce.com:8000/api/all/list/4'
-    },
-    {
-      title: '影视',
-      url: 'http://v3.wufazhuce.com:8000/api/all/list/5'
-    }
-  ];
+  const menu = [];
+  Object.keys(config.menu).forEach((key) => {
+    menu.push({
+      title: config.menu[key].title,
+      name: key
+    });
+  });
   return menu;
 };
 
@@ -52,10 +29,11 @@ const getMenu = () => {
  * @param {!String} url 栏目对应的 URL
  * @return {!Array<Object>}
  */
-const getArticleList = async (page = 1, column, url) => {
+const getArticleList = async (column, id, page = 1) => {
+  const url = config.menu[column].url;
   const articleList = [];
   let data = null;
-  if (column === '首页') {
+  if (column === 'home') {
     const current = page > 1 ? new Date(Date.now() - ((page - 1) * 86400000)) : new Date();
     const year = current.getFullYear();
     const month = current.getMonth() + 1;
@@ -69,7 +47,8 @@ const getArticleList = async (page = 1, column, url) => {
     const responseJSON = await request(url);
     const content = JSON.parse(responseJSON).html_content;
     // 通过正则表达式提取数据
-    const reg = /var allarticles=\[.+\]/;
+    const reg = /var allarticles=\[.+\]/gm;
+    writeFile('res.txt', content);
     const jsonData = reg.exec(content)[0].replace(/var allarticles=/, '');
     // 获取列表数组
     const allLists = JSON.parse(jsonData);
@@ -96,11 +75,9 @@ const getArticleList = async (page = 1, column, url) => {
  * @param {!Object} payload 部分参数
  * @return {!Object}
  */
-const getArticle = async (url, payload) => {
-  // 文章的 ID 和 类型
-  const { id, category } = payload;
+const getArticle = async ({ id, category }) => {
   try {
-    const url = articleDetailURL[category].replace(/id/, id);
+    const url = config.articleDetailURL[category].replace(/id/, id);
     const responseJSON = await request(url);
     const data = JSON.parse(responseJSON).data;
     const article = {};
@@ -113,6 +90,7 @@ const getArticle = async (url, payload) => {
     throw new Error(error);
   }
 };
+
 module.exports = {
   getMenu,
   getArticleList,

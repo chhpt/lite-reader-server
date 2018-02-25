@@ -40,27 +40,27 @@ const getMenu = async () => {
   const menu = [
     {
       title: 'Matrix',
-      url: 'https://sspai.com/matrix'
+      name: 'Matrix'
     },
     {
       title: '效率工具',
-      url: 'https://sspai.com/tag/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7#home'
+      name: '效率工具'
     },
     {
       title: '手机摄影',
-      url: 'https://sspai.com/tag/%E6%89%8B%E6%9C%BA%E6%91%84%E5%BD%B1#home'
+      name: '手机摄影'
     },
     {
       title: '生活方式',
-      url: 'https://sspai.com/tag/%E7%94%9F%E6%B4%BB%E6%96%B9%E5%BC%8F#home'
+      name: '生活方式'
     },
     {
       title: '游戏',
-      url: 'https://sspai.com/tag/%E6%B8%B8%E6%88%8F#home'
+      name: '游戏'
     },
     {
       title: '硬件',
-      url: 'https://sspai.com/tag/%E7%A1%AC%E4%BB%B6#home'
+      name: '硬件'
     }
   ];
   return menu;
@@ -95,7 +95,7 @@ const fetchArticles = async (page = 1, limit = 20, isMatrix = true, tag, include
  * @param {!Number} limit
  * @return {!Array<Object>}
  */
-const getArticleList = async (page = 1, column) => {
+const getArticleList = async (column, id, page) => {
   let responseJSON = '';
   if (column === 'Matrix') {
     responseJSON = await fetchArticles(page, 20, true);
@@ -126,7 +126,7 @@ const getArticleList = async (page = 1, column) => {
  * @param {!String} url
  * @return {!Object}
  */
-const getArticle = async (url) => {
+const getArticle = async ({ url }) => {
   const responseHTML = await request(url);
   const $ = cheerio.load(responseHTML);
   const article = {};

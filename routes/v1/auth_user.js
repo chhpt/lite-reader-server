@@ -56,7 +56,6 @@ router.post('/update_user_info', async (ctx, next) => {
 router.get('/get_follow_apps', async (ctx, next) => {
   const id = ctx.session.userId;
   const { followAPPs } = await User.getUser({ id });
-  console.log(followAPPs);
   // 过滤掉标志为不关注的应用
   const apps = followAPPs.filter(v => !v.delete);
   ctx.body = {

@@ -1,0 +1,65 @@
+module.exports = {
+  menu: {
+    home: {
+      url: 'http://www.ifanr.com/api/v3.0/?action=ifr_latest&posts_per_page=20',
+      title: '首页'
+    },
+    ifanrnews: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=ifanrnews&posts_per_page=20',
+      title: '早报'
+    },
+    app: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=latest&post_type=app&posts_per_page=20',
+      title: 'AppSolution'
+    },
+    minapp: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&post_type=minapp&posts_per_page=20',
+      title: '小程序'
+    },
+    coolBuy: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=latest&post_type=coolbuy&posts_per_page=20',
+      title: '玩物志'
+    },
+    dasheng: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&post_type=dasheng&posts_per_page=20',
+      title: '大声'
+    },
+    data: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&post_type=data&posts_per_page=20',
+      title: '数读'
+    },
+    product: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=product&posts_per_page=20',
+      title: '产品'
+    },
+    innovation: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=innovation&posts_per_page=20',
+      title: '新创'
+    },
+    life: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=life&posts_per_page=20',
+      title: '生活'
+    },
+    review: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=review&posts_per_page=20',
+      title: '评测'
+    },
+    people: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=people&posts_per_page=20',
+      title: '人物'
+    },
+    company: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=business&posts_per_page=20',
+      title: '公司'
+    },
+    intelligentcar: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&category_name=intelligentcar&posts_per_page=20',
+      title: '汽车'
+    },
+    video: {
+      url: 'https://www.ifanr.com/api/v3.0/?action=ifr_latest&post_type=video&posts_per_page=20',
+      title: '视频'
+    }
+  }
+};
+

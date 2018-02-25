@@ -1,0 +1,39 @@
+module.exports = {
+  articleDetailURL: {
+    1: 'http://v3.wufazhuce.com:8000/api/essay/htmlcontent/id', // 阅读
+    2: 'http://v3.wufazhuce.com:8000/api/serialcontent/htmlcontent/id', // 连载
+    3: 'http://v3.wufazhuce.com:8000/api/question/htmlcontent/id', // 问答
+    4: 'http://v3.wufazhuce.com:8000/api/music/htmlcontent/id', // 音乐
+    5: 'http://v3.wufazhuce.com:8000/api/movie/htmlcontent/id' // 影视
+  },
+  menu: {
+    home: {
+      title: '首页',
+      url: 'http://v3.wufazhuce.com:8000/api/channel/one/date/0'
+    },
+    picture: {
+      title: '图文',
+      url: 'http://v3.wufazhuce.com:8000/api/all/list/0'
+    },
+    essay: {
+      title: '阅读',
+      url: 'http://v3.wufazhuce.com:8000/api/all/list/1'
+    },
+    serialcontent: {
+      title: '连载',
+      url: 'http://v3.wufazhuce.com:8000/api/all/list/2'
+    },
+    question: {
+      title: '问答',
+      url: 'http://v3.wufazhuce.com:8000/api/all/list/3'
+    },
+    music: {
+      title: '音乐',
+      url: 'http://v3.wufazhuce.com:8000/api/all/list/4'
+    },
+    movie: {
+      title: '影视',
+      url: 'http://v3.wufazhuce.com:8000/api/all/list/5'
+    }
+  }
+};
