@@ -22,8 +22,11 @@ const generateUUID = () => {
   return id;
 };
 
+const generateCode = () => parseInt(Math.random().toFixed(7) * 1000000, 10);
+
 module.exports = {
   writeFile,
   getFormatTime,
-  generateUUID
+  generateUUID,
+  generateCode
 };

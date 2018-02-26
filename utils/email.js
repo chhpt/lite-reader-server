@@ -2,7 +2,8 @@ const nodemailer = require('nodemailer');
 const pug = require('pug');
 const { email } = require('../config');
 
-const compiledFunction = pug.compileFile('../views/index.pug');
+const parentPath = __dirname.split('/').slice(0, -1).join('/');
+const compiledFunction = pug.compileFile(`${parentPath}/views/index.pug`);
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.exmail.qq.com',
@@ -42,4 +43,6 @@ const sendEmail = async (to, code) => {
   });
 };
 
-module.exports = sendEmail;
+module.exports = {
+  sendEmail
+};

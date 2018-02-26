@@ -4,41 +4,86 @@
 
 const Router = require('koa-router');
 const User = require('../models/user');
-const { getFormatTime } = require('../utils');
+const Verification = require('../models/verification');
+
+const { getFormatTime, generateCode } = require('../utils');
+const { sendEmail } = require('../utils/email');
 
 const router = new Router({
   prefix: '/user'
 });
 
+// 发送验证码
+router.post('/send_verification_code', async (ctx, next) => {
+  const { email } = ctx.request.body;
+  if (email) {
+    // sh
+    const code = generateCode();
+    await sendEmail(email, code);
+    Verification.setCode(code, email);
+    ctx.body = {
+      status: 1
+    };
+  } else {
+    ctx.body = {
+      status: 0,
+      error: '邮箱不能为空'
+    };
+  }
+  await next();
+});
+
 // 注册新用户
 router.post('/register', async (ctx, next) => {
-  const { username, password, email } = ctx.request.body;
+  const { username, password, email, code } = ctx.request.body;
   const exit = await User.checkUser(email);
+  console.log(code);
+  // 无验证码
+  if (!code) {
+    ctx.body = {
+      status: 0,
+      error: '验证码不能为空'
+    };
+    await next();
+    return;
+  }
   // 邮箱已经存在
   if (exit) {
     ctx.body = {
       status: 0,
       error: '邮箱已被占用'
     };
-  } else {
-    const registerTime = getFormatTime();
-    const { ip } = ctx;
-    const user = {
-      username,
-      password,
-      email,
-      registerTime,
-      ips: [ip]
-    };
-    // 注册成功
-    const users = await User.insertUser(user);
-    const status = users.length ? 1 : 0;
-    ctx.body = {
-      status,
-      id: users[0]._id,
-      email: users[0].email
-    };
+    await next();
+    return;
   }
+  // 获取已存储验证码
+  const storeCode = await Verification.getCode(email);
+  console.log(storeCode);
+  if (code !== storeCode) {
+    ctx.body = {
+      status: 0,
+      error: '验证码错误'
+    };
+    await next();
+    return;
+  }
+  const registerTime = getFormatTime();
+  const { ip } = ctx;
+  const user = {
+    username,
+    password,
+    email,
+    registerTime,
+    ips: [ip]
+  };
+  // 注册成功
+  const users = await User.insertUser(user);
+  const status = users.length ? 1 : 0;
+  ctx.body = {
+    status,
+    id: users[0]._id,
+    email: users[0].email
+  };
   await next();
 });
 
