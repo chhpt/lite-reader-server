@@ -22,7 +22,10 @@ const generateUUID = () => {
   return id;
 };
 
-const generateCode = () => parseInt(Math.random().toFixed(7) * 1000000, 10);
+const generateCode = () => {
+  const code = parseInt(Math.random().toFixed(7) * 1000000, 10).toString();
+  return code.length === 6 ? code : code.concat('000000'.slice(0, 6 - code.length));
+};
 
 module.exports = {
   writeFile,

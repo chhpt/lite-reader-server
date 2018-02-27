@@ -33,7 +33,10 @@ const sendEmail = async (to, code) => {
 
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (error, info) => {
-      if (info.accepted.length) {
+      if (error) {
+        reject(error);
+      }
+      if (info && info.accepted.length) {
         resolve({ status: 1 });
       } else {
         resolve({ status: 0 });

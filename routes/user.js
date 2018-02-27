@@ -17,13 +17,20 @@ const router = new Router({
 router.post('/send_verification_code', async (ctx, next) => {
   const { email } = ctx.request.body;
   if (email) {
-    // sh
+    // 生成随机验证码
     const code = generateCode();
-    await sendEmail(email, code);
-    Verification.setCode(code, email);
-    ctx.body = {
-      status: 1
-    };
+    try {
+      await sendEmail(email, code);
+      Verification.setCode(code, email);
+      ctx.body = {
+        status: 1
+      };
+    } catch (error) {
+      ctx.body = {
+        error: '发送失败，请检查你的邮箱地址是否正确',
+        status: 0
+      };
+    }
   } else {
     ctx.body = {
       status: 0,
@@ -58,7 +65,6 @@ router.post('/register', async (ctx, next) => {
   }
   // 获取已存储验证码
   const storeCode = await Verification.getCode(email);
-  console.log(storeCode);
   if (code !== storeCode) {
     ctx.body = {
       status: 0,
@@ -78,12 +84,19 @@ router.post('/register', async (ctx, next) => {
   };
   // 注册成功
   const users = await User.insertUser(user);
-  const status = users.length ? 1 : 0;
-  ctx.body = {
-    status,
-    id: users[0]._id,
-    email: users[0].email
-  };
+  if (users.length) {
+    ctx.body = {
+      status: 1,
+      account: {
+        username,
+        id: users[0]._id,
+        email: users[0].email
+      }
+    };
+    // 写入 session 信息，标志登录成功
+    ctx.session.signed = 1;
+    ctx.session.userId = users[0]._id;
+  }
   await next();
 });
 
@@ -103,11 +116,14 @@ router.post('/login', async (ctx, next) => {
       error: '密码错误'
     };
   } else {
+    // 登录成功
     ctx.body = {
       status: 1,
-      username: user.username,
-      email: user.email,
-      id: user._id
+      account: {
+        username: user.username,
+        email: user.email,
+        id: user._id
+      }
     };
     // 写入 session 信息，标志登录成功
     ctx.session.signed = 1;
