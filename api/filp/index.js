@@ -116,7 +116,6 @@ const getArticle = async ({ url, section, hasRss }) => {
   // 通过其他合作接口获取
   const responseHTML = await request(url);
   const $ = cheerio.load(responseHTML);
-  console.log(responseHTML);
   const article = {};
   $('article header').remove();
   article.title = $('title').text();
