@@ -19,7 +19,8 @@ router.use('/', async (ctx, next) => {
   if (!user) {
     ctx.body = {
       status: 0,
-      error: '你的身份信息有误，请重新登录'
+      expired: 1, // 身份过期
+      error: '你的身份信息已过期，请重新登录'
     };
   }
   // 身份信息验证成功
