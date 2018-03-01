@@ -12,7 +12,7 @@ module.exports = {
   },
   session: {
     key: 'user_id',
-    maxAge: 86400000,
+    maxAge: 2592000000,
     overwrite: true,
     httpOnly: true,
     signed: true,
