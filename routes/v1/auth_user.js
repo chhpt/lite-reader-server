@@ -89,4 +89,38 @@ router.post('/cancel_follow_app', async (ctx, next) => {
   await next();
 });
 
+router.post('/collect_article', async (ctx, next) => {
+  const id = ctx.session.userId;
+  const { article } = ctx.request.body;
+  const res = await User.addCollectArticle(id, article);
+  if (res) {
+    ctx.body = {
+      status: 1
+    };
+  } else {
+    ctx.body = {
+      status: 0,
+      error: '收藏失败'
+    };
+  }
+  await next();
+});
+
+router.post('/cancel_collect_article', async (ctx, next) => {
+  const id = ctx.session.userId;
+  const { article } = ctx.request.body;
+  const res = await User.cancelCollectArticle(id, article);
+  if (res) {
+    ctx.body = {
+      status: 1
+    };
+  } else {
+    ctx.body = {
+      status: 0,
+      error: '取消收藏失败'
+    };
+  }
+  await next();
+});
+
 module.exports = router;

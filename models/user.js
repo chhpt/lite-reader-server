@@ -7,6 +7,7 @@ const UserSchema = {
   registerTime: Date, // 注册时间
   ips: Array, // 访问 ip
   readHistory: Array, // 阅读的历史文章
+  collectArticles: Array,
   followAPPs: Array, // 关注的应用
   setting: Object // 个人设置信息
 };
@@ -65,7 +66,6 @@ class User {
     }
   }
 
-
   async addUserFollow(id, app) {
     try {
       // 关注的应用是否已经存在
@@ -115,9 +115,47 @@ class User {
       throw new Error(error);
     }
   }
+
+  async addCollectArticle(id, article) {
+    try {
+      // 是否已经收藏过此文章
+      const exit = await this.db.findOne({ _id: id, 'collectArticles.title': article.title });
+      if (exit) {
+        return article;
+      }
+      const result = await this.db.findByIdAndUpdate(id, {
+        $push: { collectArticles: article }
+      });
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async cancelCollectArticle(id, article) {
+    try {
+      const res = await this.db.update(
+        {
+          _id: id,
+          'collectArticles.title': article.title
+        },
+        {
+          $set: {
+            'collectArticles.$.delete': 1
+          }
+        }
+      );
+      return res;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
-// new User().addUserFollow('5a858d11501f6b4ce7338f04', { title: '21CTO' });
+new User()
+  .cancelCollectArticle('5a858d11501f6b4ce7338f04', { title: 'fadsfffasdfcd' })
+  .then((res) => {
+    console.log(res);
+  });
 
 module.exports = new User();
-

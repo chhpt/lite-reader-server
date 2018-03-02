@@ -3,6 +3,6 @@ const prod = require('./prod.js');
 
 const env = process.env.NODE_ENV;
 
-const config = env === 'dev' ? dev : prod;
+const config = env === 'prod' ? prod : dev;
 
 module.exports = config;
