@@ -34,7 +34,8 @@ const getArticleList = async (section, id) => {
     url: contentListURL,
     qs: params,
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) APPleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) APPleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'
     }
   });
   // 将非 JSON 格式的数据转换成 JSON 格式的
@@ -47,28 +48,31 @@ const getArticleList = async (section, id) => {
     }
   });
   // 提取文章信息，删除没有标题的文章
-  const data = jsonData.map((e) => {
-    // writeFile('test.json', array);
-    const parseData = JSON.parse(e);
-    // 根据原数据 type 提取主要数据
-    let item;
-    const article = {};
-    article.section = parseData.sectionID;
-    // mainItem 可能不存在
-    if (parseData.type === 'sectionCover') {
-      item = parseData.mainItem ? parseData.mainItem : {};
-    } else {
-      item = parseData;
-    }
-    article.title = item.title;
-    article.id = item.id;
-    article.summary = item.excerptText;
-    article.time = item.dateCreated;
-    article.image = item.inlineImage ? item.inlineImage.mediumURL : '';
-    article.url = item.sourceURL;
-    article.hasRss = Boolean(item.rssText);
-    return article;
-  }).filter(e => e.title);
+  const data = jsonData
+    .map((e) => {
+      // writeFile('test.json', array);
+      const parseData = JSON.parse(e);
+      // 根据原数据 type 提取主要数据
+      let item;
+      const article = {};
+      article.section = parseData.sectionID;
+      // mainItem 可能不存在
+      if (parseData.type === 'sectionCover') {
+        item = parseData.mainItem ? parseData.mainItem : {};
+      } else {
+        item = parseData;
+      }
+      article.title = item.title;
+      article.id = item.id;
+      // 去除 HTML 标签
+      article.summary = item.excerptText ? item.excerptText.replace(/<[^>]+>/g, '') : '';
+      article.time = item.dateCreated;
+      article.image = item.inlineImage ? item.inlineImage.mediumURL : '';
+      article.url = item.sourceURL;
+      article.hasRss = Boolean(item.rssText);
+      return article;
+    })
+    .filter(e => e.title);
   // 删除重复文章
   let flag;
   data.forEach((e, i) => {
@@ -82,18 +86,17 @@ const getArticleList = async (section, id) => {
   return data;
 };
 
-const getArticle = async ({ url, section, hasRss }) => {
+const getArticle = async (param) => {
+  const { url, section, hasRss } = param;
+  const article = param;
   // 微信公众号文章
   if (url.indexOf('weixin') > -1) {
     const responseHTML = await request(url);
     const $ = cheerio.load(responseHTML);
-    const article = {};
-    // 文章标题
-    article.title = $('#img-content .rich_media_title').text();
-    // 文章发布时间
-    article.time = $('#img-content #post-date').text();
     // 文章内容（HTML）
-    const content = $('#img-content .rich_media_content ').html().replace(/data-src/g, 'src');
+    const content = $('#img-content .rich_media_content ')
+      .html()
+      .replace(/data-src/g, 'src');
     article.content = content;
     return article;
   }
@@ -107,20 +110,18 @@ const getArticle = async ({ url, section, hasRss }) => {
       }
     });
     const { data } = JSON.parse(responseJSON);
-    const article = {};
-    article.title = data.title;
-    article.time = data.itemcreated.$date;
     article.content = data.rss;
     return article;
   }
   // 通过其他合作接口获取
   const responseHTML = await request(url);
   const $ = cheerio.load(responseHTML);
-  const article = {};
   $('article header').remove();
-  article.title = $('title').text();
-  article.time = $('time').text();
   article.content = $('article').html();
+
+  if (!article.content) {
+    article.content = $('body').html();
+  }
   return article;
 };
 
@@ -129,4 +130,3 @@ module.exports = {
   getArticleList,
   getArticle
 };
-

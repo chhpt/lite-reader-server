@@ -34,8 +34,14 @@ app.use(async (ctx, next) => {
   await next();
   // 允许跨域
   ctx.set('Access-Control-Allow-Origin', ctx.headers.origin);
-  ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  ctx.set('Access-Control-Allow-Headers', 'Referer, Accept, Origin, User-Agent, X-Requested-With, Content-Type, withCredentials');
+  ctx.set(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  ctx.set(
+    'Access-Control-Allow-Headers',
+    'Referer, Accept, Origin, User-Agent, X-Requested-With, Content-Type, withCredentials'
+  );
   ctx.set('Access-Control-Allow-Methods', 'HEAD, OPTIONS, GET, POST, DELETE, PUT');
   ctx.set('Access-Control-Allow-Credentials', true);
 });
