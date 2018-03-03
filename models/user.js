@@ -66,6 +66,19 @@ class User {
     }
   }
 
+  async updatePassword(id, oldPass, newPass) {
+    try {
+      const exit = await this.db.findOne({ _id: id, password: oldPass });
+      if (exit) {
+        const res = await this.db.findByIdAndUpdate(id, { password: newPass });
+        return res;
+      }
+      return null;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async addUserFollow(id, app) {
     try {
       // 关注的应用是否已经存在
@@ -121,7 +134,18 @@ class User {
       // 是否已经收藏过此文章
       const exit = await this.db.findOne({ _id: id, 'collectArticles.title': article.title });
       if (exit) {
-        return article;
+        const res = await this.db.update(
+          {
+            _id: id,
+            'collectArticles.title': article.title
+          },
+          {
+            $set: {
+              'collectArticles.$.delete': 0
+            }
+          }
+        );
+        return res;
       }
       const result = await this.db.findByIdAndUpdate(id, {
         $push: { collectArticles: article }
@@ -132,12 +156,12 @@ class User {
     }
   }
 
-  async cancelCollectArticle(id, article) {
+  async cancelCollectArticle(id, url) {
     try {
       const res = await this.db.update(
         {
           _id: id,
-          'collectArticles.title': article.title
+          'collectArticles.url': url
         },
         {
           $set: {
@@ -152,10 +176,10 @@ class User {
   }
 }
 
-new User()
-  .cancelCollectArticle('5a858d11501f6b4ce7338f04', { title: 'fadsfffasdfcd' })
-  .then((res) => {
-    console.log(res);
-  });
+// new User()
+//   .cancelCollectArticle('5a858d11501f6b4ce7338f04', { title: 'fadsfffasdfcd' })
+//   .then((res) => {
+//     console.log(res);
+//   });
 
 module.exports = new User();

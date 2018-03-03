@@ -102,14 +102,11 @@ const getArticleList = async (column, id, page) => {
  * @param {!String} url
  * @return {!Object}
  */
-const getArticle = async ({ url }) => {
+const getArticle = async (param) => {
+  const { url } = param;
   const responseHTML = await request(url);
   const $ = cheerio.load(responseHTML);
-  const article = {};
-  // 文章标题
-  article.title = $('.main article .title').text();
-  // 文章发布时间
-  article.time = $('.main article .meta').find('time').text();
+  const article = param;
   // 文章内容（HTML）
   article.content = $('.main article .article-content .content').html();
   return article;

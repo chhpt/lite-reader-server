@@ -3,12 +3,7 @@
  */
 
 const Router = require('koa-router');
-const {
-  getCategories,
-  getMenu,
-  getArticleList,
-  getArticle
-} = require('../api');
+const { getCategories, getMenu, getArticleList, getArticle } = require('../api');
 
 const router = new Router();
 
@@ -26,20 +21,36 @@ router.get('/get_menu', async (ctx, next) => {
 });
 
 router.get('/get_article_list', async (ctx, next) => {
-  const {
-    type, appId, column, id, page
-  } = ctx.query;
-  const data = await getArticleList(type, appId, column, id, page);
-  ctx.body = JSON.stringify(data);
+  const { type, appId, column, id, page } = ctx.query;
+  try {
+    const list = await getArticleList(type, appId, column, id, page);
+    ctx.body = {
+      status: 1,
+      articleList: list
+    };
+  } catch (error) {
+    ctx.body = {
+      status: 0,
+      error: error.message
+    };
+  }
   await next();
 });
 
 router.get('/get_article', async (ctx, next) => {
-  const {
-    type, appId, article
-  } = ctx.query;
-  const data = await getArticle(type, appId, JSON.parse(article));
-  ctx.body = JSON.stringify(data);
+  const { type, appId, article } = ctx.query;
+  try {
+    const res = await getArticle(type, appId, JSON.parse(article));
+    ctx.body = {
+      article: res,
+      status: 1
+    };
+  } catch (error) {
+    ctx.body = {
+      error: error.message,
+      status: 0
+    };
+  }
   await next();
 });
 

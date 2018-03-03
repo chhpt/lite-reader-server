@@ -6,7 +6,7 @@ const request = require('request-promise-native');
 const cheerio = require('cheerio');
 
 const config = require('./config');
-const { writeFile } = require('../../../../utils');
+// const { writeFile } = require('../../../../utils');
 /**
  * 获取栏目
  * @return {!Array<Object>}
@@ -48,11 +48,16 @@ const getArticleList = async (column, id, page = 1) => {
     const content = JSON.parse(responseJSON).html_content;
     // 通过正则表达式提取数据
     const reg = /var allarticles=\[.+\]/gm;
-    writeFile('res.txt', content);
     const jsonData = reg.exec(content)[0].replace(/var allarticles=/, '');
     // 获取列表数组
-    const allLists = JSON.parse(jsonData);
-    data = allLists[page - 1].list;
+    try {
+      const allLists = JSON.parse(jsonData);
+      data = allLists[page - 1].list;
+    } catch (error) {
+      // 尝试解析错误数据
+      const allLists = JSON.parse(jsonData.concat('}]'));
+      data = allLists[page - 1].list;
+    }
   }
   data.forEach((item) => {
     const article = {};
@@ -75,12 +80,16 @@ const getArticleList = async (column, id, page = 1) => {
  * @param {!Object} payload 部分参数
  * @return {!Object}
  */
-const getArticle = async ({ id, category }) => {
+const getArticle = async (param) => {
+  const { id, category } = param;
   try {
+    if (parseInt(category, 10) === 0) {
+      throw new Error('图文无法打开');
+    }
     const url = config.articleDetailURL[category].replace(/id/, id);
     const responseJSON = await request(url);
     const data = JSON.parse(responseJSON).data;
-    const article = {};
+    const article = param;
     article.title = data.title;
     article.url = data.web_url;
     const $ = cheerio.load(data.html_content);

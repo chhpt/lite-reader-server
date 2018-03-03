@@ -54,6 +54,23 @@ router.post('/update_user_info', async (ctx, next) => {
   await next();
 });
 
+router.post('/change_password', async (ctx, next) => {
+  const id = ctx.session.userId;
+  const { newPassword, oldPassword } = ctx.request.body;
+  const result = await User.updatePassword(id, oldPassword, newPassword);
+  if (result) {
+    ctx.body = {
+      status: 1
+    };
+  } else {
+    ctx.body = {
+      status: 0,
+      error: '原始密码错误，请重试'
+    };
+  }
+  await next();
+});
+
 router.get('/get_follow_apps', async (ctx, next) => {
   const id = ctx.session.userId;
   const { followAPPs } = await User.getUser({ id });
@@ -89,9 +106,23 @@ router.post('/cancel_follow_app', async (ctx, next) => {
   await next();
 });
 
+router.get('/get_collect_articles', async (ctx, next) => {
+  const id = ctx.session.userId;
+  const { collectArticles } = await User.getUser({ id });
+  // 过滤掉标志为不收藏的文章
+  const articles = collectArticles.filter(v => !v.delete);
+  ctx.body = {
+    articles,
+    status: 1
+  };
+  await next();
+});
+
 router.post('/collect_article', async (ctx, next) => {
   const id = ctx.session.userId;
   const { article } = ctx.request.body;
+  article.content = null;
+  article.summary = article.summary.length < 256 ? article.summary : article.summary.slice(0, 256);
   const res = await User.addCollectArticle(id, article);
   if (res) {
     ctx.body = {
@@ -108,8 +139,8 @@ router.post('/collect_article', async (ctx, next) => {
 
 router.post('/cancel_collect_article', async (ctx, next) => {
   const id = ctx.session.userId;
-  const { article } = ctx.request.body;
-  const res = await User.cancelCollectArticle(id, article);
+  const { url } = ctx.request.body;
+  const res = await User.cancelCollectArticle(id, url);
   if (res) {
     ctx.body = {
       status: 1

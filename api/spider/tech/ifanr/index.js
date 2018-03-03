@@ -53,15 +53,11 @@ const getArticleList = async (column, id) => {
  * @param {!String} url
  * @return {!Object}
  */
-const getArticle = async ({ url }) => {
-  console.log(url);
+const getArticle = async (param) => {
+  const { url } = param;
   const responseHTML = await request(url);
   const $ = cheerio.load(responseHTML);
-  const article = {};
-  // 文章标题
-  article.title = $('.c-single-normal__title').text();
-  // 文章发布时间
-  article.time = $('.c-article-header-meta__time').text();
+  const article = param;
   // 文章内容（HTML）
   article.content = $('article.o-single-content__body__content').html();
   return article;
