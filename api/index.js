@@ -115,6 +115,7 @@ const getArticle = async (type, appId, articleInfo) => {
     // 根据分类获取栏目
     article = await defineCategories[category].getArticle(appName, articleInfo);
   }
+  article.content = article.content ? article.content.replace(/(<[^>]+) style=".*?"/gi, '$1') : '';
   return article;
 };
 
@@ -124,4 +125,3 @@ module.exports = {
   getArticleList,
   getArticle
 };
-

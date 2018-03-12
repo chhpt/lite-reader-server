@@ -1,6 +1,5 @@
 const MongoDB = require('./db');
 
-
 const SessionSchema = {
   _id: String,
   data: Object,
@@ -26,7 +25,7 @@ class SessionStore {
     return result ? result.data : null;
   }
 
-  async set(key, data, maxAge = 86400) {
+  async set(key, data, maxAge = 0) {
     const record = {
       _id: key,
       data,
